@@ -5,7 +5,8 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/strict-type-checked',
     'plugin:@typescript-eslint/stylistic-type-checked',
-    'plugin:jsx-a11y/recommended'
+    'plugin:jsx-a11y/recommended',
+    'plugin:tailwindcss/recommended'
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs', '*.config.ts'],
   parser: '@typescript-eslint/parser',
@@ -52,5 +53,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+
+    /* tailwind */
+    'tailwindcss/no-custom-classname': 'off'
   },
 }

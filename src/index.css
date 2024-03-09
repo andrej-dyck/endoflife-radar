@@ -1,8 +1,38 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  :root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    @apply bg-gray-800 text-blue-50 max-w-[100dvw] min-h-dvh
+  }
+
+  h1 {
+    @apply text-3xl text-blue-100 mb-2;
+  }
+
+  h2 {
+    @apply text-2xl text-blue-100 mb-1;
+  }
+
+  h3 {
+    @apply text-xl text-blue-100 mb-0.5;
+  }
+
+  p {
+    @apply text-lg font-light;
+  }
+
+  *,
+  *:after,
+  *:before{
+    box-sizing: border-box;
+  }
 }
