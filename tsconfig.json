@@ -1,44 +1,17 @@
 {
+  "extends": "./tsconfig.node.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "outDir": "./dist",
-
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": true,
-    "allowSyntheticDefaultImports": true,
-    "composite": true,
-    "moduleDetection": "force",
-    "isolatedModules": true,
-
-    /* Base Options */
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "ESNext",
-    "incremental": true,
+    "module": "preserve",
     "noEmit": true,
+    "allowSyntheticDefaultImports": true,
 
     /* JSX */
     "jsx": "react-jsx",
 
-    /* Strictness */
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
-
     /* Libs */
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "types": ["node", "vite/client"],
-  },
-  "include": ["src", "./*.d.ts", "./*.config.ts"]
+    "types": ["node", "vite/client"]
+  }
 }
