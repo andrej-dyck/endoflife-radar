@@ -18,7 +18,9 @@ const withErrorBoundary = (route: RouteObject) =>
   ({ ...route, errorElement: <ErrorBoundary /> })
 
 const Loading = () => (
-  <h1>Loading...</h1>
+  <main className="container p-8">
+    <h1>Loading...</h1>
+  </main>
 )
 
 const ErrorBoundary = () => {
@@ -26,8 +28,9 @@ const ErrorBoundary = () => {
 
   useEffect(() => console.error(error), [error])
 
-  return <>
+  return <main className="container p-8">
     <h1>Oops... Something went wrong!</h1>
-    <p>{error instanceof Error ? error.message : <pre>{JSON.stringify(error, null, 2)}</pre>}</p>
-  </>
+    <p>{error instanceof Error ? error.message : <pre>{JSON.stringify(error, null, 2)}</pre>
+    }</p>
+  </main>
 }

@@ -9,7 +9,7 @@ import { SpinnerBars } from './icons/SpinnerIcons.tsx'
 export const App = () => {
   const { t } = useTranslation('ui')
   return (
-    <main className="container p-4">
+    <main className="container p-8">
       <h1 className="inline-flex items-center gap-2"><RadarIcon /> {t('title')}</h1>
       <ProductList />
     </main>

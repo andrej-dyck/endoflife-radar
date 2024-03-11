@@ -12,7 +12,7 @@ export const EndOfProductLife = () => {
   const { data, isLoading } = useSWRImmutable({ key: 'product-eol', productId }, endOfLifeDate().product)
 
   const { t } = useTranslation(['products'])
-  return <main className="container p-4">
+  return <main className="container p-8">
     <h1 className="inline-flex items-center gap-2"><RadarIcon /> {t(productId)}</h1>
     {isLoading ? <SpinnerBars /> : <>
       {data && <p className="mb-2"><LinkNewTab href={data.href} /></p>}
