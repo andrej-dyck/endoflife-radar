@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
-import { object, parse } from 'valibot'
-import { endOfLifeDate, nonEmptyString } from './endoflife.date.ts'
+import { z } from 'zod'
+import { endOfLifeDate } from './endoflife.date.ts'
 import { OpenInNewIcon } from './icons/OpenInNewIcon.tsx'
 import { RadarIcon } from './icons/RadarIcon.tsx'
 import { SpinnerBars } from './icons/SpinnerIcons.tsx'
 
 export const EndOfProductLife = () => {
-  const { productId } = parse(object({ productId: nonEmptyString }), useParams())
+  const { productId } = z.object({ productId: z.string() }).parse(useParams())
   const { data, isLoading } = useSWRImmutable({ key: 'product-eol', productId }, endOfLifeDate().product)
 
   const { t } = useTranslation(['products'])
