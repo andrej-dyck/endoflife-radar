@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { object, parse } from 'valibot'
@@ -10,8 +11,9 @@ export const EndOfProductLife = () => {
   const { productId } = parse(object({ productId: nonEmptyString }), useParams())
   const { data, isLoading } = useSWRImmutable({ key: 'product-eol', productId }, endOfLifeDate().product)
 
+  const { t } = useTranslation(['products'])
   return <main className="container p-4">
-    <h1 className="inline-flex items-center gap-2"><RadarIcon /> {productId}</h1>
+    <h1 className="inline-flex items-center gap-2"><RadarIcon /> {t(productId)}</h1>
     {isLoading ? <SpinnerBars /> : <>
       <p className="mb-2">{data && <LinkNewTab href={data.href} />}</p>
       <pre>{JSON.stringify(data, null, 2)}</pre>

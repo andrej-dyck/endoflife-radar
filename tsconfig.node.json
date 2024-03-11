@@ -33,5 +33,5 @@
     "lib": ["ES2023"],
     "types": ["node"],
   },
-  "include": ["./src", "./*.d.ts", "./*.config.ts"]
+  "include": ["./src", "./src/locale/*.json", "./*.d.ts", "./*.config.ts"]
 }
