@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
@@ -16,17 +17,32 @@ export const App = () => {
 }
 
 const ProductList = () => {
-  const { data, isLoading } = useSWRImmutable('all-products', endOfLifeDate().allProducts)
+  const { products, isLoading } = useProductList()
 
-  const { t } = useTranslation(['ui', 'products'])
+  const { t } = useTranslation('ui')
 
   if (isLoading) return <SpinnerBars />
   return <>
-    <h3>📃 {t('product-list', { total: data?.products.length })}</h3>
+    <h3>📃 {t('product-list', { total: products?.length })}</h3>
     <ul>
-      {data?.products.map(p => <li key={p}>
-        <Link to={`eol/${p}`}>{t(p, { ns: 'products' })}</Link>
+      {products?.map(p => <li key={p.productId}>
+        <Link to={`eol/${p.productId}`}>{p.name}</Link>
       </li>)}
     </ul>
   </>
+}
+
+const useProductList = () => {
+  const { data, isLoading } = useSWRImmutable('product-list', endOfLifeDate().allProducts)
+  const { t } = useTranslation('products')
+
+  const products = useMemo(
+    () => data?.products.map(p => ({
+      productId: p,
+      name: t(p),
+    })).toSorted(({ name: n1 }, { name: n2 }) => n1.localeCompare(n2)),
+    [data, t]
+  )
+
+  return { products, isLoading }
 }

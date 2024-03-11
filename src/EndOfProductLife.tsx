@@ -15,7 +15,7 @@ export const EndOfProductLife = () => {
   return <main className="container p-4">
     <h1 className="inline-flex items-center gap-2"><RadarIcon /> {t(productId)}</h1>
     {isLoading ? <SpinnerBars /> : <>
-      <p className="mb-2">{data && <LinkNewTab href={data.href} />}</p>
+      {data && <p className="mb-2"><LinkNewTab href={data.href} /></p>}
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </>}
   </main>
