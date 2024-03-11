@@ -17,11 +17,15 @@ export const endOfLifeDate = (
   fetchJson: (url: string | URL) => Promise<unknown> = (url) => fetch(url).then(res => res.json() as unknown)
 ) => {
   const apiUrl = 'https://endoflife.date/api'
+  const eolUrl = 'https://endoflife.date'
   return {
     allProducts: (): Promise<{ readonly products: Products }> =>
       fetchJson(`${apiUrl}/all.json`).then(r => ({ products: parse(products, r) })),
-    product: ({ productId }: { productId: string }): Promise<{ readonly cycles: Cycles }> =>
-      fetchJson(`${apiUrl}/${productId}.json`).then(r => ({ cycles: parse(cycles, r) })),
+    product: ({ productId }: { productId: string }): Promise<{ readonly cycles: Cycles, readonly href: string }> =>
+      fetchJson(`${apiUrl}/${productId}.json`).then(r => ({
+        cycles: parse(cycles, r),
+        href: `${eolUrl}/${productId}`,
+      })),
   }
 }
 

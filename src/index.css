@@ -30,6 +30,10 @@
     @apply text-lg font-light;
   }
 
+  a {
+    @apply underline
+  }
+
   *,
   *:after,
   *:before{
