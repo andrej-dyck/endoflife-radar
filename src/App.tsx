@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { endOfLifeDate } from './endoflife.date.ts'
 import { RadarIcon } from './icons/RadarIcon.tsx'
+import { SpinnerBars } from './icons/SpinnerIcons.tsx'
 
 export const App = () => (
   <main className="container p-4">
@@ -11,8 +12,9 @@ export const App = () => (
 )
 
 const ProductList = () => {
-  const { data } = useSWRImmutable('all-products', endOfLifeDate().allProducts)
+  const { data, isLoading } = useSWRImmutable('all-products', endOfLifeDate().allProducts)
 
+  if (isLoading) return <SpinnerBars />
   return <>
     <h3>📃 Products ({data?.products.length})</h3>
     <ul>
