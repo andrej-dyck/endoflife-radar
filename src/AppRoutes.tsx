@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { createBrowserRouter, RouteObject, RouterProvider, useRouteError } from 'react-router-dom'
 import { App } from './App.tsx'
+import { EndOfProductLife } from './EndOfProductLife.tsx'
 
 export const AppRoutes = () =>
   <RouterProvider
@@ -10,6 +11,7 @@ export const AppRoutes = () =>
 
 const router = () => createBrowserRouter([
   { path: '/', element: <App /> },
+  { path: '/eol/:productId', element: <EndOfProductLife /> },
 ].map(withErrorBoundary))
 
 const withErrorBoundary = (route: RouteObject) =>
