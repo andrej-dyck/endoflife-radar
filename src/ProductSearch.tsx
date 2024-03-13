@@ -8,21 +8,27 @@ import { SpinnerBars } from './icons/SpinnerIcons.tsx'
 import { SearchBox } from './ui-components/SearchBox.tsx'
 
 export const ProductSearch = () => {
-  const [searchString, setSearchString] = useState('')
-  const { products, isLoading } = useFilteredProductList(searchString)
+  const [search, setSearch] = useState({ input: '', focus: false })
+  const { products, isLoading } = useFilteredProductList(search.input)
+
+  const [resultsFocus, setResultsFocus] = useState(false)
+  const showResults = useMemo(() => search.input && (search.focus || resultsFocus), [search, resultsFocus])
 
   const { t } = useTranslation('ui')
 
-  return <div className="w-1/3 min-w-60 space-y-2">
+  return <div role="search" className="w-1/3 min-w-60 space-y-2">
     <SearchBox
       label={t('product-search.label')}
       placeholder={t('product-search.placeholder')}
-      onChange={(s) => setSearchString(s)}
+      onChange={(input) => setSearch(s => ({ ...s, input }))}
+      onFocusChange={(focus) => setSearch(s => ({ ...s, focus }))}
     />
-    {searchString && <div className="relative">
+    {showResults && <div className="relative">
       {isLoading ? <SpinnerBars /> : (
-        <ul className="absolute z-50 block w-full space-y-2
-          divide-y divide-gray-500 rounded-lg border border-gray-500 bg-gray-700 p-2"
+        <ul
+          className="absolute z-50 block w-full space-y-2 divide-y divide-gray-500 rounded-lg border border-gray-500 bg-gray-700 p-2"
+          onPointerEnter={() => setResultsFocus(true)}
+          onPointerLeave={() => setResultsFocus(false)}
         >
           {products?.map(p => (
             <li key={p.productId} className="">
@@ -35,17 +41,17 @@ export const ProductSearch = () => {
   </div>
 }
 
-const useFilteredProductList = (searchString: string) => {
-  const { products, isLoading } = useProductList({ load: !!searchString })
+const useFilteredProductList = (searchInput: string) => {
+  const { products, isLoading } = useProductList({ load: !!searchInput })
 
   const filteredProducts = useMemo(
     () => products == null ? undefined :
-      searchString
+      searchInput
         ? fuzzy
-          .filter(searchString, products, { extract: p => p.name })
+          .filter(searchInput, products, { extract: p => p.name })
           .map(r => r.original)
         : [],
-    [products, searchString]
+    [products, searchInput]
   )
 
   return { products: filteredProducts, isLoading }
