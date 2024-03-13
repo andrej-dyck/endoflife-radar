@@ -1,7 +1,10 @@
 {
   "ui": {
-    "title": "End-of-life and Support Lifecycles",
-    "product-list": "Products ({{total}})"
+    "title": "End-of-life Radar",
+    "product-search": {
+      "label": "Products",
+      "placeholder": "Find product; e.g., Alpine, React ..."
+    }
   },
   "products": {
     "akeneo-pim": "Akeneo PIM",
