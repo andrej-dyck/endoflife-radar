@@ -1,5 +1,6 @@
-import React from 'react'
+import { useRef, useState } from 'react'
 import { SearchIcon } from '../icons/SearchIcon.tsx'
+import { onEsc, stopPropagation } from './input-events.ts'
 
 export const SearchBox = ({ label, placeholder, formClassName, onChange, onFocusChange }: {
   label: string,
@@ -8,16 +9,27 @@ export const SearchBox = ({ label, placeholder, formClassName, onChange, onFocus
   onChange: (input: string) => void
   onFocusChange?: (hasFocus: boolean) => void
 }) => {
+  const [value, setValue] = useState('')
+
+  const changeValue = (v: string) => {
+    setValue(v)
+    onChange(v.trim())
+  }
+
+  const ref = useRef<HTMLInputElement>(null)
+
   return <form className={formClassName} onSubmit={stopPropagation}>
     <div className="flex">
       <label htmlFor="search" className="sr-only mb-2 text-sm font-medium">{label}</label>
       <div className="relative w-full">
-        <input type="search" id="search"
+        <input type="search" id="search" ref={ref}
           className="block w-full rounded-lg border border-gray-500 bg-gray-700 p-2 placeholder:text-gray-400 focus:border-sky-700 focus:ring-sky-700"
+          value={value}
           placeholder={placeholder}
-          onChange={(e) => onChange(e.target.value.trim())}
+          onChange={(e) => changeValue(e.target.value)}
           onFocus={() => onFocusChange?.(true)}
           onBlur={() => onFocusChange?.(false)}
+          onKeyDown={onEsc(() => value ? changeValue('') : ref.current?.blur())}
         />
         <div
           className="absolute end-0 top-0 flex h-full flex-col place-content-center rounded-e-lg border border-sky-700 bg-sky-700 p-2 hover:bg-sky-700 focus:ring-4 focus:ring-sky-700"
@@ -30,8 +42,3 @@ export const SearchBox = ({ label, placeholder, formClassName, onChange, onFocus
   </form>
 }
 
-const stopPropagation = (event: React.SyntheticEvent) => {
-  event.preventDefault()
-  event.stopPropagation()
-  event.nativeEvent.stopImmediatePropagation()
-}
