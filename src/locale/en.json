@@ -3,7 +3,7 @@
     "title": "End-of-life Radar",
     "product-search": {
       "label": "Products",
-      "placeholder": "Find product; e.g., Alpine, React ..."
+      "placeholder": "(ctrl+k) Find product; e.g., Alpine, React ..."
     }
   },
   "products": {

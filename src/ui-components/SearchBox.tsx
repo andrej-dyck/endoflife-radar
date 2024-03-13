@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { SearchIcon } from '../icons/SearchIcon.tsx'
 import { onEsc, stopPropagation } from './input-events.ts'
 
@@ -10,13 +11,14 @@ export const SearchBox = ({ label, placeholder, formClassName, onChange, onFocus
   onFocusChange?: (hasFocus: boolean) => void
 }) => {
   const [value, setValue] = useState('')
-
   const changeValue = (v: string) => {
     setValue(v)
     onChange(v.trim())
   }
 
   const ref = useRef<HTMLInputElement>(null)
+
+  useHotkeys('ctrl+k', () => ref.current?.focus(), { preventDefault: true })
 
   return <form className={formClassName} onSubmit={stopPropagation}>
     <div className="flex">
