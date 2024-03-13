@@ -1,3 +1,4 @@
+import * as fuzzy from 'fuzzy'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -34,11 +35,12 @@ const useFilteredProductList = (searchString: string) => {
   const { products, isLoading } = useProductList({ load: !!searchString })
 
   const filteredProducts = useMemo(
-    () => searchString
-      ? products?.filter(
-        ({ productId, name }) => productId.startsWith(searchString) || name.toLowerCase().startsWith(searchString)
-      )
-      : [],
+    () => products == null ? undefined :
+      searchString
+        ? fuzzy
+          .filter(searchString, products, { extract: p => p.name })
+          .map(r => r.original)
+        : [],
     [products, searchString]
   )
 
