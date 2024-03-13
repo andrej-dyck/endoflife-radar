@@ -2,7 +2,7 @@ import { SVGProps } from 'react'
 
 /** svg-spinners:bars-scale-fade */
 export const SpinnerBars = (props: SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" aria-hidden="true" viewBox="0 0 24 24" {...props}>
     <rect width="6" height="14" x="1" y="4" fill="currentColor">
       <animate id="svgSpinnersBarsScaleFade0" fill="freeze" attributeName="y"
         begin="0;svgSpinnersBarsScaleFade1.end-0.25s" dur="0.75s" values="1;5"></animate>
@@ -32,7 +32,7 @@ export const SpinnerBars = (props: SVGProps<SVGSVGElement>) => (
 
 /** svg-spinners:90-ring-with-bg */
 export const SpinnersRing = (props: SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" aria-hidden="true" viewBox="0 0 24 24" {...props}>
     <path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"
       opacity=".25"></path>
     <path fill="currentColor"
