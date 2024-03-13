@@ -16,6 +16,7 @@ export default {
         'focus': colors.sky['700'],
         'element-bg': colors.gray['700'],
         'element-border': colors.gray['500'],
+        'highlight-bg': colors.slate['500'],
       },
       container: { center: true },
     },

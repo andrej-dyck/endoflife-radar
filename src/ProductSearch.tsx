@@ -1,13 +1,14 @@
 import * as fuzzy from 'fuzzy'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { endOfLifeDate } from './endoflife.date.ts'
 import { SpinnerBars } from './icons/SpinnerIcons.tsx'
 import { SearchBox } from './ui-components/SearchBox.tsx'
 
-export const ProductSearch = () => {
+export const ProductSearch = ({ onSelect }: {
+  onSelect?: (p: { productId: string }) => void
+}) => {
   const [search, setSearch] = useState({ input: '', searchFocus: false, resultsFocus: false })
   const { products, isLoading } = useFilteredProductList(search.input)
 
@@ -15,7 +16,7 @@ export const ProductSearch = () => {
 
   const { t } = useTranslation('ui')
 
-  return <div role="search" className="w-1/3 min-w-60 space-y-2">
+  return <div role="search" className="w-1/3 min-w-60">
     <SearchBox
       label={t('product-search.label')}
       placeholder={t('product-search.placeholder')}
@@ -25,26 +26,34 @@ export const ProductSearch = () => {
     {showResults && <SearchResults
       products={products}
       isLoading={isLoading}
+      onSelect={(p) => {
+        onSelect?.(p)
+        setSearch(s => ({ ...s, resultsFocus: false }))
+      }}
       onFocusChange={(resultsFocus) => setSearch(s => ({ ...s, resultsFocus }))}
     />}
   </div>
 }
 
-const SearchResults = ({ products, isLoading, onFocusChange }: {
-  products?: { productId: string, name: string }[],
-  isLoading?: boolean,
+const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
+  products?: { productId: string, name: string }[]
+  isLoading?: boolean
+  onSelect?: (p: { productId: string }) => void
   onFocusChange?: (hasFocus: boolean) => void
 }) => {
   return <div className="relative">
     {isLoading ? <SpinnerBars /> : (
       <ul
-        className="absolute z-50 block w-full space-y-2 divide-y divide-element-border rounded-lg border border-element-border bg-element-bg p-2"
+        className="absolute top-2 z-50 block max-h-[66dvh] w-full divide-y divide-element-border overflow-y-scroll rounded-lg border border-element-border bg-element-bg p-2 first:mt-0 last:mb-0"
         onPointerEnter={() => onFocusChange?.(true)}
         onPointerLeave={() => onFocusChange?.(false)}
       >
         {products?.map(p => (
           <li key={p.productId}>
-            <Link to={`eol/${p.productId}`}>{p.name}</Link>
+            <button
+              className="my-1 w-full content-center rounded p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
+              onClick={() => onSelect?.(p)}
+            >{p.name}</button>
           </li>
         ))}
       </ul>
