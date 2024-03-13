@@ -19,15 +19,19 @@ export const ProductSearch = () => {
       placeholder={t('product-search.placeholder')}
       onChange={(s) => setSearchString(s)}
     />
-    <div className="relative">
+    {searchString && <div className="relative">
       {isLoading ? <SpinnerBars /> : (
-        <ul className="absolute z-50 p-2 pt-0">
-          {products?.map(p => <li key={p.productId}>
-            <Link to={`eol/${p.productId}`}>{p.name}</Link>
-          </li>)}
+        <ul className="absolute z-50 block w-full space-y-2
+          divide-y divide-gray-500 rounded-lg border border-gray-500 bg-gray-700 p-2"
+        >
+          {products?.map(p => (
+            <li key={p.productId} className="">
+              <Link to={`eol/${p.productId}`}>{p.name}</Link>
+            </li>
+          ))}
         </ul>
       )}
-    </div>
+    </div>}
   </div>
 }
 
