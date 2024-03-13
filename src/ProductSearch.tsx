@@ -8,11 +8,10 @@ import { SpinnerBars } from './icons/SpinnerIcons.tsx'
 import { SearchBox } from './ui-components/SearchBox.tsx'
 
 export const ProductSearch = () => {
-  const [search, setSearch] = useState({ input: '', focus: false })
+  const [search, setSearch] = useState({ input: '', searchFocus: false, resultsFocus: false })
   const { products, isLoading } = useFilteredProductList(search.input)
 
-  const [resultsFocus, setResultsFocus] = useState(false)
-  const showResults = useMemo(() => search.input && (search.focus || resultsFocus), [search, resultsFocus])
+  const showResults = useMemo(() => search.input && (search.searchFocus || search.resultsFocus), [search])
 
   const { t } = useTranslation('ui')
 
@@ -21,23 +20,35 @@ export const ProductSearch = () => {
       label={t('product-search.label')}
       placeholder={t('product-search.placeholder')}
       onChange={(input) => setSearch(s => ({ ...s, input }))}
-      onFocusChange={(focus) => setSearch(s => ({ ...s, focus }))}
+      onFocusChange={(searchFocus) => setSearch(s => ({ ...s, searchFocus }))}
     />
-    {showResults && <div className="relative">
-      {isLoading ? <SpinnerBars /> : (
-        <ul
-          className="absolute z-50 block w-full space-y-2 divide-y divide-gray-500 rounded-lg border border-gray-500 bg-gray-700 p-2"
-          onPointerEnter={() => setResultsFocus(true)}
-          onPointerLeave={() => setResultsFocus(false)}
-        >
-          {products?.map(p => (
-            <li key={p.productId} className="">
-              <Link to={`eol/${p.productId}`}>{p.name}</Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>}
+    {showResults && <SearchResults
+      products={products}
+      isLoading={isLoading}
+      onFocusChange={(resultsFocus) => setSearch(s => ({ ...s, resultsFocus }))}
+    />}
+  </div>
+}
+
+const SearchResults = ({ products, isLoading, onFocusChange }: {
+  products?: { productId: string, name: string }[],
+  isLoading?: boolean,
+  onFocusChange?: (hasFocus: boolean) => void
+}) => {
+  return <div className="relative">
+    {isLoading ? <SpinnerBars /> : (
+      <ul
+        className="absolute z-50 block w-full space-y-2 divide-y divide-element-border rounded-lg border border-element-border bg-element-bg p-2"
+        onPointerEnter={() => onFocusChange?.(true)}
+        onPointerLeave={() => onFocusChange?.(false)}
+      >
+        {products?.map(p => (
+          <li key={p.productId}>
+            <Link to={`eol/${p.productId}`}>{p.name}</Link>
+          </li>
+        ))}
+      </ul>
+    )}
   </div>
 }
 

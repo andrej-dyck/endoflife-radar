@@ -8,7 +8,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:tailwindcss/recommended'
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', '*.config.ts'],
+  ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: ['./tsconfig.json'],

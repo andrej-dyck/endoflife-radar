@@ -25,7 +25,7 @@ export const SearchBox = ({ label, placeholder, formClassName, onChange, onFocus
       <label htmlFor="search" className="sr-only mb-2 text-sm font-medium">{label}</label>
       <div className="relative w-full">
         <input type="search" id="search" ref={ref}
-          className="block w-full rounded-lg border border-gray-500 bg-gray-700 p-2 placeholder:text-gray-400 focus:border-sky-700 focus:ring-sky-700"
+          className="block w-full rounded-lg border border-element-border bg-element-bg p-2 placeholder:text-placeholder-text focus:border-focus focus:ring-focus"
           value={value}
           placeholder={placeholder}
           onChange={(e) => changeValue(e.target.value)}
@@ -34,7 +34,7 @@ export const SearchBox = ({ label, placeholder, formClassName, onChange, onFocus
           onKeyDown={onEsc(() => value ? changeValue('') : ref.current?.blur())}
         />
         <div
-          className="absolute end-0 top-0 flex h-full flex-col place-content-center rounded-e-lg border border-sky-700 bg-sky-700 p-2 hover:bg-sky-700 focus:ring-4 focus:ring-sky-700"
+          className="absolute end-0 top-0 flex h-full flex-col place-content-center rounded-e-lg border border-primary-element bg-primary-element p-2 hover:bg-focus focus:ring-4 focus:ring-focus"
         >
           <SearchIcon className="size-5" />
           <span className="sr-only">Search</span>
