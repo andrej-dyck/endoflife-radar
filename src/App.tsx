@@ -13,7 +13,7 @@ export const App = () => {
       <h1 className="inline-flex items-center gap-2"><RadarIcon /> {t('title')}</h1>
       <ProductSearch onSelect={(p) => setProducts(ps => new Set([...ps, p]))} />
     </header>
-    <main className="container flex flex-col gap-2 p-2">
+    <main className="container">
       <Dashboard products={[...products]} />
     </main>
   </>)

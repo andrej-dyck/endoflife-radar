@@ -14,7 +14,7 @@ export const EndOfProductLife = () => {
   return <main className="container p-4">
     <h1 className="inline-flex items-center gap-2"><RadarIcon /> {name}</h1>
     {isLoading ? <SpinnerBars /> : <>
-      {href && <p className="mb-2"><LinkNewTab href={href} /></p>}
+      {href && <p className="mb-2"><LinkNewTab href={href} text={href} /></p>}
       <pre>{JSON.stringify({ cycles }, null, 2)}</pre>
     </>}
   </main>

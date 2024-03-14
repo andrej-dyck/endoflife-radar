@@ -44,7 +44,7 @@ const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
   return <div className="relative">
     {isLoading ? <SpinnerBars /> : (
       <ul
-        className="absolute top-2 z-50 block max-h-[66dvh] w-full divide-y divide-element-border overflow-y-scroll rounded-lg border border-element-border bg-element-bg p-2 first:mt-0 last:mb-0"
+        className="absolute top-2 z-50 block max-h-[66dvh] w-full divide-y divide-element-border overflow-y-scroll rounded-lg border border-element-border bg-element-bg p-2 transition-all first:mt-0 last:mb-0"
         onPointerEnter={() => onFocusChange?.(true)}
         onPointerLeave={() => onFocusChange?.(false)}
       >
