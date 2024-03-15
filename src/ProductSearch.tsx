@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import useSWRImmutable from 'swr/immutable'
 import { endOfLifeDate } from './endoflife.date.ts'
-import { SpinnerBars } from './icons/SpinnerIcons.tsx'
+import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 import { SearchBox } from './ui-components/SearchBox.tsx'
 
 export const ProductSearch = ({ onSelect }: {
@@ -42,13 +42,14 @@ const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
   onFocusChange?: (hasFocus: boolean) => void
 }) => {
   return <div className="relative">
-    {isLoading ? <SpinnerBars /> : (
-      <ul
-        className="absolute top-2 z-50 block max-h-[66dvh] w-full divide-y divide-element-border overflow-y-scroll rounded-lg border border-element-border bg-element-bg p-2 transition-all first:mt-0 last:mb-0"
-        onPointerEnter={() => onFocusChange?.(true)}
-        onPointerLeave={() => onFocusChange?.(false)}
-      >
-        {products?.map(p => (
+    <ul
+      className="absolute top-2 z-50 block max-h-[66dvh] w-full divide-y divide-element-border overflow-y-auto rounded-lg border border-element-border bg-element-bg p-2 transition-all first:mt-0 last:mb-0"
+      onPointerEnter={() => onFocusChange?.(true)}
+      onPointerLeave={() => onFocusChange?.(false)}
+    >
+      {isLoading
+        ? <li><SpinnerBars /></li>
+        : products?.map(p => (
           <li key={p.productId}>
             <button
               className="my-1 w-full content-center rounded p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
@@ -56,8 +57,7 @@ const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
             >{p.name}</button>
           </li>
         ))}
-      </ul>
-    )}
+    </ul>
   </div>
 }
 

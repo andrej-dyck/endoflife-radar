@@ -1,7 +1,7 @@
 import { SVGProps } from 'react'
 import { Link } from 'react-router-dom'
 import { useProductEolInfo } from './EndOfProductLife.tsx'
-import { SpinnerBars } from './icons/SpinnerIcons.tsx'
+import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
 
 export const Dashboard = ({ products }: { products: readonly { productId: string }[] }) => {

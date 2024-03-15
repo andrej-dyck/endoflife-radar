@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { z } from 'zod'
+import { ScreenTitle } from './App.tsx'
 import { endOfLifeDate } from './endoflife.date.ts'
-import { RadarIcon } from './icons/RadarIcon.tsx'
-import { SpinnerBars } from './icons/SpinnerIcons.tsx'
+import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
 
 export const EndOfProductLife = () => {
@@ -12,7 +12,7 @@ export const EndOfProductLife = () => {
   const { name, href, cycles, isLoading } = useProductEolInfo(product)
 
   return <main className="container p-4">
-    <h1 className="inline-flex items-center gap-2"><RadarIcon /> {name}</h1>
+    <ScreenTitle text={name} />
     {isLoading ? <SpinnerBars /> : <>
       {href && <p className="mb-2"><LinkNewTab href={href} text={href} /></p>}
       <pre>{JSON.stringify({ cycles }, null, 2)}</pre>
