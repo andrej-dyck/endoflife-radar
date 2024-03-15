@@ -1,3 +1,4 @@
+import { match, P } from 'ts-pattern'
 import { z, ZodType, ZodTypeDef } from 'zod'
 import { fromZodError } from 'zod-validation-error'
 
@@ -47,7 +48,7 @@ const cycle = z.object({
   cycle: nonEmptyString, // release cycle name or version number
   codename: nullishNonEmptyString,
   releaseDate: isoDate.nullish(), // release date for the first release in this cycle
-  lts: z.boolean().or(isoDate), // whether this release cycle has long-term-support; or a date if release enters LTS status on a given date
+  lts: z.boolean().or(isoDate).nullish(), // whether this release cycle has long-term-support; or a date if release enters LTS status on a given date
   eol: z.boolean().or(isoDate).nullish(), // end of life date for this release cycle or false
   latest: nullishNonEmptyString, // latest release in this cycle
   latestReleaseDate: isoDate.nullish(), // date of the latest release in this cycle
@@ -56,3 +57,50 @@ const cycle = z.object({
   discontinued: z.boolean().or(isoDate).nullish(), // whether this cycle is now discontinued (false); or a date when product was discontinued
 })
 const cycles = z.array(cycle)
+
+/** Derived Cycle State */
+export type CycleState = { state: 'unknown' }
+  | { state: 'active-support', endDate?: Date, securityEndDate?: Date }
+  | { state: 'security-support', endDate?: Date, }
+  | { state: 'discontinued', onDate?: Date, supportEndDate?: Date }
+  | { state: 'unsupported', supportEndDate?: Date }
+export const cycleState = (cycle: Cycle) => (now: Date): CycleState => {
+  const isEol = (eol: Cycle['eol']) =>
+    eol === true || (isDate(eol) && eol < now)
+
+  const isNotEol = (eol: Cycle['eol']) => !isEol(eol)
+
+  const eolDate = ({ eol }: Pick<Cycle, 'eol'>) =>
+    isDate(eol) ? eol : undefined
+
+  const supportEnded = (support: Cycle['support']) =>
+    support === false || (isDate(support) && support < now)
+
+  const supportEndDate = ({ support }: Pick<Cycle, 'support'>) =>
+    isDate(support) ? support : undefined
+
+  const isDiscontinued = (discontinued: Cycle['discontinued']) =>
+    discontinued === true || (isDate(discontinued) && discontinued < now)
+
+  const discontinuedDate = ({ discontinued }: Pick<Cycle, 'discontinued'>) =>
+    isDate(discontinued) ? discontinued : undefined
+
+  return match(cycle)
+    .returnType<CycleState>()
+    .with({ eol: P.when(isEol) }, (c) => (
+      { state: 'unsupported', supportEndDate: eolDate(c) ?? supportEndDate(c) }
+    ))
+    .with({ eol: P.when(isNotEol), discontinued: P.when(isDiscontinued) }, (c) => (
+      { state: 'discontinued', onDate: discontinuedDate(c), supportEndDate: eolDate(c) }
+    ))
+    .with({ eol: P.when(isNotEol), support: P.when(supportEnded) }, (c) => (
+      { state: 'security-support', endDate: eolDate(c) ?? supportEndDate(c) }
+    ))
+    .with({ eol: P.when(isNotEol) }, (c) => (
+      { state: 'active-support', endDate: supportEndDate(c) ?? eolDate(c), securityEndDate: eolDate(c) }
+    ))
+    .otherwise(() => ({ state: 'unknown' }))
+}
+
+const isDate = (boolOrDate: boolean | Date | null | undefined): boolOrDate is Date =>
+  boolOrDate != null && typeof boolOrDate !== 'boolean'
