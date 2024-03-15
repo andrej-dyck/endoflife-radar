@@ -14,7 +14,7 @@ export const App = () => {
       <ScreenTitle text={t('title')} />
       <ProductSearch onSelect={(p) => setProducts(ps => new Set([...ps, p]))} />
     </header>
-    <main className="container">
+    <main className="container pb-4">
       <Dashboard products={[...products]} />
     </main>
   </>)

@@ -19,11 +19,11 @@
   }
 
   h2 {
-    @apply text-2xl text-blue-100 mb-1;
+    @apply text-2xl text-blue-100 font-light mb-1;
   }
 
   h3 {
-    @apply text-xl text-blue-100 mb-0.5;
+    @apply text-xl;
   }
 
   p {
