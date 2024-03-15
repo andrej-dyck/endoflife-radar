@@ -1,5 +1,9 @@
-import { undefined, z, ZodSchema } from 'zod'
+import { undefined, z, ZodType, ZodTypeDef } from 'zod'
 import { fromZodError } from 'zod-validation-error'
+
+export type Products = z.infer<typeof products>
+export type Product = z.infer<typeof product>
+export type Cycles = z.infer<typeof cycles>
 
 export const endOfLifeDate = (
   fetchJson: (url: string | URL) => Promise<unknown> = (url) => fetch(url).then(res => res.json() as unknown)
@@ -9,7 +13,7 @@ export const endOfLifeDate = (
   return {
     allProducts: (): Promise<{ readonly products: Products }> =>
       fetchJson(`${apiUrl}/all.json`).then(r => ({ products: parse(products, r) })),
-    product: ({ productId }: { productId: string }): Promise<{ readonly cycles: Cycles, readonly href: string }> =>
+    product: ({ productId }: Product): Promise<{ readonly cycles: Cycles, readonly href: string }> =>
       fetchJson(`${apiUrl}/${productId}.json`).then(r => ({
         cycles: parse(cycles, r),
         href: `${eolUrl}/${productId}`,
@@ -17,7 +21,7 @@ export const endOfLifeDate = (
   }
 }
 
-const parse = <T>(schema: ZodSchema<T>, data: unknown): T => {
+const parse = <TOut, TIn>(schema: ZodType<TOut, ZodTypeDef, TIn>, data: unknown): TOut => {
   const parsed = schema.safeParse(data)
   if (!parsed.success) {
     const message = fromZodError(parsed.error).toString()
@@ -29,13 +33,12 @@ const parse = <T>(schema: ZodSchema<T>, data: unknown): T => {
 
 const nonEmptyString = z.string().trim().min(1)
 
-export type Products = z.infer<typeof products>
-const products = z.array(nonEmptyString)
+const product = nonEmptyString.transform((productId) => ({ productId }))
+const products = z.array(product)
 
 const isoDate = z.string().regex(/\d{4}-\d{2}-\d{2}/).refine((s: string) => !Number.isNaN(Date.parse(s)), { message: 'expected yyyy-MM-dd string' })
 const nullishNonEmptyString = z.string().trim().transform(s => s ? s : undefined).nullish()
 
-export type Cycles = z.infer<typeof cycles>
 const cycle = z.object({
   cycle: nonEmptyString, // release cycle name or version number
   codename: nullishNonEmptyString,

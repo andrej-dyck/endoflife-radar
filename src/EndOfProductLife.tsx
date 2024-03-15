@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { z } from 'zod'
 import { ScreenTitle } from './App.tsx'
-import { endOfLifeDate } from './endoflife.date.ts'
+import { endOfLifeDate, Product } from './endoflife.date.ts'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
 
@@ -21,7 +21,7 @@ export const EndOfProductLife = () => {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useProductEolInfo = ({ productId }: { productId: string }) => {
+export const useProductEolInfo = ({ productId }: Product) => {
   const { data, isLoading } = useSWRImmutable({ key: 'product-eol', productId }, endOfLifeDate().product)
 
   const { t } = useTranslation(['products'])

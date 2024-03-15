@@ -1,10 +1,11 @@
 import { SVGProps, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dashboard } from './Dashboard.tsx'
+import { Product } from './endoflife.date.ts'
 import { ProductSearch } from './ProductSearch.tsx'
 
 export const App = () => {
-  const [products, setProducts] = useState<Set<{ productId: string }>>(new Set([]))
+  const [products, setProducts] = useState<Set<Product>>(new Set([]))
 
   const { t } = useTranslation('ui')
   return (<>

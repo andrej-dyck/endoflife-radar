@@ -2,12 +2,12 @@ import * as fuzzy from 'fuzzy'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import useSWRImmutable from 'swr/immutable'
-import { endOfLifeDate } from './endoflife.date.ts'
-import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
+import { endOfLifeDate, Product } from './endoflife.date.ts'
 import { SearchBox } from './ui-components/SearchBox.tsx'
+import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
 export const ProductSearch = ({ onSelect }: {
-  onSelect?: (p: { productId: string }) => void
+  onSelect?: (product: Product) => void
 }) => {
   const [search, setSearch] = useState({ input: '', searchFocus: false, resultsFocus: false })
   const { products, isLoading } = useFilteredProductList(search.input)
@@ -36,9 +36,9 @@ export const ProductSearch = ({ onSelect }: {
 }
 
 const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
-  products?: { productId: string, name: string }[]
+  products?: readonly LocalizedProduct[]
   isLoading?: boolean
-  onSelect?: (p: { productId: string }) => void
+  onSelect?: (product: Product) => void
   onFocusChange?: (hasFocus: boolean) => void
 }) => {
   return <div className="relative">
@@ -77,6 +77,8 @@ const useFilteredProductList = (searchInput: string) => {
   return { products: filteredProducts, isLoading }
 }
 
+type LocalizedProduct = Product & { readonly name: string }
+
 const useProductList = (args?: { load?: boolean }) => {
   const { data, isLoading } = useSWRImmutable(
     args?.load == null || args.load ? 'product-list' : null,
@@ -87,7 +89,7 @@ const useProductList = (args?: { load?: boolean }) => {
 
   const products = useMemo(
     () => data?.products
-      .map(p => ({ productId: p, name: t(p) }))
+      .map(p => ({ ...p, name: t(p.productId) } satisfies LocalizedProduct))
       .toSorted(({ name: n1 }, { name: n2 }) => n1.localeCompare(n2)),
     [data, t]
   )

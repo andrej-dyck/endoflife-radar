@@ -1,16 +1,17 @@
 import { SVGProps } from 'react'
 import { Link } from 'react-router-dom'
+import { Product, Products } from './endoflife.date.ts'
 import { useProductEolInfo } from './EndOfProductLife.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
 
-export const Dashboard = ({ products }: { products: readonly { productId: string }[] }) => {
+export const Dashboard = ({ products }: { products: Products }) => {
   return <div className="grid grid-cols-1 place-content-center justify-items-stretch gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
     {products.map(p => <ProductCard key={p.productId} product={p} />)}
   </div>
 }
 
-const ProductCard = ({ product }: { product: { productId: string } }) => {
+const ProductCard = ({ product }: { product: Product }) => {
   const { name, href, isLoading } = useProductEolInfo(product)
 
   const iconClass = 'size-6 rounded-full transition-all p-1 hover:ring hover:ring-focus focus:ring focus:ring-focus'
