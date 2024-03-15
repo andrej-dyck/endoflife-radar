@@ -1,9 +1,10 @@
-import { undefined, z, ZodType, ZodTypeDef } from 'zod'
+import { z, ZodType, ZodTypeDef } from 'zod'
 import { fromZodError } from 'zod-validation-error'
 
 export type Products = z.infer<typeof products>
 export type Product = z.infer<typeof product>
 export type Cycles = z.infer<typeof cycles>
+export type Cycle = z.infer<typeof cycle>
 
 export const endOfLifeDate = (
   fetchJson: (url: string | URL) => Promise<unknown> = (url) => fetch(url).then(res => res.json() as unknown)
@@ -36,8 +37,11 @@ const nonEmptyString = z.string().trim().min(1)
 const product = nonEmptyString.transform((productId) => ({ productId }))
 const products = z.array(product)
 
-const isoDate = z.string().regex(/\d{4}-\d{2}-\d{2}/).refine((s: string) => !Number.isNaN(Date.parse(s)), { message: 'expected yyyy-MM-dd string' })
-const nullishNonEmptyString = z.string().trim().transform(s => s ? s : undefined).nullish()
+const isoDate = z.string()
+  .regex(/\d{4}-\d{2}-\d{2}/)
+  .refine((s) => !Number.isNaN(Date.parse(s)), { message: 'expected yyyy-MM-dd string' })
+  .transform<Date>(s => new Date(Date.parse(s)))
+const nullishNonEmptyString = z.string().trim().transform<string | undefined>(s => s ? s : undefined).nullish()
 
 const cycle = z.object({
   cycle: nonEmptyString, // release cycle name or version number
