@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { createBrowserRouter, RouteObject, RouterProvider, useRouteError } from 'react-router-dom'
-import { App } from './App.tsx'
+import { AllProductsDashboard, App } from './App.tsx'
 import { EndOfProductLife } from './EndOfProductLife.tsx'
 
 export const AppRoutes = () =>
@@ -11,6 +11,7 @@ export const AppRoutes = () =>
 
 const router = () => createBrowserRouter([
   { path: '/', element: <App /> },
+  { path: '/all', element: <AllProductsDashboard /> },
   { path: '/eol/:productId', element: <EndOfProductLife /> },
 ].map(withErrorBoundary))
 
@@ -30,7 +31,10 @@ const ErrorBoundary = () => {
 
   return <main className="container p-8">
     <h1>Oops... Something went wrong!</h1>
-    <p>{error instanceof Error ? error.message : <pre>{JSON.stringify(error, null, 2)}</pre>
+    <p>{
+      error instanceof Error
+        ? error.message
+        : <pre>{JSON.stringify(error, null, 2)}</pre>
     }</p>
   </main>
 }

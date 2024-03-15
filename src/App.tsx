@@ -2,7 +2,8 @@ import { SVGProps, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dashboard } from './Dashboard.tsx'
 import { Product } from './endoflife.date.ts'
-import { ProductSearch } from './ProductSearch.tsx'
+import { ProductSearch, useProductList } from './ProductSearch.tsx'
+import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
 export const App = () => {
   const [products, setProducts] = useState<Set<Product>>(new Set([]))
@@ -15,6 +16,20 @@ export const App = () => {
     </header>
     <main className="container">
       <Dashboard products={[...products]} />
+    </main>
+  </>)
+}
+
+export const AllProductsDashboard = () => {
+  const { products, isLoading } = useProductList()
+
+  const { t } = useTranslation('ui')
+  return (<>
+    <header className="container p-2 pt-8">
+      <ScreenTitle text={t('title')} />
+    </header>
+    <main className="container pb-4">
+      {isLoading ? <SpinnerBars /> : products && <Dashboard products={[...products]} />}
     </main>
   </>)
 }

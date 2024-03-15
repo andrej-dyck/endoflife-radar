@@ -26,7 +26,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         {cycles && <ProductCycles cycles={cycles} />}
       </div>
       <div className="flex justify-end gap-1">
-        <Link to={`eol/${product.productId}`}><MagnifyIcon className={iconClass} /></Link>
+        <Link to={`/eol/${product.productId}`}><MagnifyIcon className={iconClass} /></Link>
         {href && <LinkNewTab href={href} iconClass={iconClass} />}
       </div>
     </>)}
