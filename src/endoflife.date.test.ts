@@ -991,7 +991,40 @@ describe('cycle-state', () => {
       expectedState: { state: 'security-support', endDate: futureDate } satisfies CycleState,
     },
   ])('security-support; %j', ({ cycle, expectedState }) => {
-    expect(cycleState(cycle)(now)).toEqual(expectedState)
+    expect(cycleState(cycle)(now)).toMatchObject(expectedState)
+  })
+
+  test.each([
+    {
+      cycle: { cycle: '1', eol: false, lts: true },
+      expectedState: { state: 'active-support', isLts: true } satisfies CycleState,
+    },
+    {
+      cycle: { cycle: '2', eol: false, lts: false },
+      expectedState: { state: 'active-support', isLts: false } satisfies CycleState,
+    },
+    {
+      cycle: { cycle: '3', eol: false },
+      expectedState: { state: 'active-support', isLts: undefined } satisfies CycleState,
+    },
+    {
+      cycle: { cycle: '4', eol: furtherFutureDate, lts: futureDate },
+      expectedState: { state: 'active-support', isLts: true } satisfies CycleState,
+    },
+    {
+      cycle: { cycle: '5', eol: false, support: false, lts: true },
+      expectedState: { state: 'security-support', isLts: true } satisfies CycleState,
+    },
+    {
+      cycle: { cycle: '6', eol: false, support: false, lts: false },
+      expectedState: { state: 'security-support', isLts: false } satisfies CycleState,
+    },
+    {
+      cycle: { cycle: '6', eol: false, support: false },
+      expectedState: { state: 'security-support', isLts: undefined } satisfies CycleState,
+    },
+  ])('is LTS; %j', ({ cycle, expectedState }) => {
+    expect(cycleState(cycle)(now)).toMatchObject(expectedState)
   })
 
   test.each([

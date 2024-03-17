@@ -54,12 +54,13 @@ const ProductCycle = ({ cycle, isLatest }: { cycle: Cycle, isLatest?: boolean })
   </span>
 }
 
-const ProductCycleState = ({ state: { state } }: { state: CycleState }) => {
-  return state === 'active-support' ? <CheckIcon className="text-green-600" /> :
-    state === 'security-support' ? <SafetyCheckIcon className="text-orange-600" /> :
-      state === 'discontinued' ? <ReleaseAlertIcon className="text-orange-600" /> :
-        state === 'unsupported' ? <StopIcon className="text-red-700" /> :
-          <UnknownIcon />
+const ProductCycleState = ({ state }: { state: CycleState }) => {
+  return state.state === 'active-support' && state.isLts ? <StarCheckIcon className="text-amber-300" /> :
+    state.state === 'active-support' ? <CheckIcon className="text-green-600" /> :
+      state.state === 'security-support' ? <SafetyCheckIcon className="text-orange-600" /> :
+        state.state === 'discontinued' ? <ReleaseAlertIcon className="text-orange-600" /> :
+          state.state === 'unsupported' ? <StopIcon className="text-red-700" /> :
+            <UnknownIcon />
 }
 
 /** material-symbols:feature-search-outline */
@@ -75,6 +76,14 @@ const CheckIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
     <path fill="currentColor"
       d="m10.6 16.6l7.05-7.05l-1.4-1.4l-5.65 5.65l-2.85-2.85l-1.4 1.4zM12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22"></path>
+  </svg>
+)
+
+/** mdi:star-check */
+const StarCheckIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+    <path fill="currentColor"
+      d="m5.8 21l1.6-7L2 9.2l7.2-.6L12 2l2.8 6.6l7.2.6l-3.2 2.8H18c-3.1 0-5.6 2.3-6 5.3zm12 .2l4.8-4.8l-1.3-1.4l-3.6 3.6l-1.5-1.6l-1.2 1.2z"></path>
   </svg>
 )
 

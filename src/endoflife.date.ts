@@ -60,11 +60,13 @@ const cycles = z.array(cycle)
 
 /** Derived Cycle State */
 export type CycleState = { state: 'unknown' }
-  | { state: 'active-support', endDate?: Date, securityEndDate?: Date }
-  | { state: 'security-support', endDate?: Date, }
+  | { state: 'active-support', endDate?: Date, securityEndDate?: Date, isLts?: boolean }
+  | { state: 'security-support', endDate?: Date, isLts?: boolean }
   | { state: 'discontinued', onDate?: Date, supportEndDate?: Date }
   | { state: 'unsupported', supportEndDate?: Date }
+
 export const cycleState = (cycle: Cycle) => (now: Date): CycleState => {
+
   const isEol = (eol: Cycle['eol']) =>
     eol === true || (isDate(eol) && eol < now)
 
@@ -85,6 +87,9 @@ export const cycleState = (cycle: Cycle) => (now: Date): CycleState => {
   const discontinuedDate = ({ discontinued }: Pick<Cycle, 'discontinued'>) =>
     isDate(discontinued) ? discontinued : undefined
 
+  const isLts = ({ lts }: Pick<Cycle, 'lts'>) =>
+    lts != null ? isDate(lts) ? true : lts : undefined
+
   return match(cycle)
     .returnType<CycleState>()
     .with({ eol: P.when(isEol) }, (c) => (
@@ -94,10 +99,10 @@ export const cycleState = (cycle: Cycle) => (now: Date): CycleState => {
       { state: 'discontinued', onDate: discontinuedDate(c), supportEndDate: eolDate(c) }
     ))
     .with({ eol: P.when(isNotEol), support: P.when(supportEnded) }, (c) => (
-      { state: 'security-support', endDate: eolDate(c) ?? supportEndDate(c) }
+      { state: 'security-support', endDate: eolDate(c) ?? supportEndDate(c), isLts: isLts(c) }
     ))
     .with({ eol: P.when(isNotEol) }, (c) => (
-      { state: 'active-support', endDate: supportEndDate(c) ?? eolDate(c), securityEndDate: eolDate(c) }
+      { state: 'active-support', endDate: supportEndDate(c) ?? eolDate(c), securityEndDate: eolDate(c), isLts: isLts(c) }
     ))
     .otherwise(() => ({ state: 'unknown' }))
 }
