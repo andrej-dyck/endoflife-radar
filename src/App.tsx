@@ -1,21 +1,20 @@
 import { SVGProps, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dashboard } from './Dashboard.tsx'
-import { Product } from './endoflife.date.ts'
 import { ProductSearch, useProductList } from './ProductSearch.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
 export const App = () => {
-  const [products, setProducts] = useState<Set<Product>>(new Set([]))
+  const [productIds, setProductIds] = useState<Set<string>>(new Set([]))
 
   const { t } = useTranslation('ui')
   return (<>
     <header className="container flex flex-row flex-wrap items-start justify-between gap-2 p-2 pt-8">
       <ScreenTitle text={t('title')} />
-      <ProductSearch onSelect={(p) => setProducts(ps => new Set([...ps, p]))} />
+      <ProductSearch onSelect={(p) => setProductIds(ps => new Set([...ps, p.productId]))} />
     </header>
     <main className="container pb-4">
-      <Dashboard products={[...products]} />
+      <Dashboard products={[...productIds].map(productId => ({ productId }))} />
     </main>
   </>)
 }
