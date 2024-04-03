@@ -2,10 +2,11 @@ import { SVGProps, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { onEsc, stopPropagation } from './input-events.ts'
 
-export const SearchBox = ({ label, placeholder, formClassName, onChange, onFocusChange }: {
+export const SearchBox = ({ label, placeholder, formClassName, hotkey, onChange, onFocusChange }: {
   label: string,
   placeholder?: string,
   formClassName?: string,
+  hotkey?: string,
   onChange: (input: string) => void
   onFocusChange?: (hasFocus: boolean) => void
 }) => {
@@ -17,7 +18,7 @@ export const SearchBox = ({ label, placeholder, formClassName, onChange, onFocus
 
   const ref = useRef<HTMLInputElement>(null)
 
-  useHotkeys('ctrl+k', () => ref.current?.focus(), { preventDefault: true })
+  useHotkeys(hotkey ?? '', () => ref.current?.focus(), { enabled: hotkey != null, preventDefault: true })
 
   return <form className={formClassName} onSubmit={stopPropagation}>
     <div className="flex">

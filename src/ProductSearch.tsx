@@ -22,6 +22,7 @@ export const ProductSearch = ({ onSelect }: {
       placeholder={t('product-search.placeholder')}
       onChange={(input) => setSearch(s => ({ ...s, input }))}
       onFocusChange={(searchFocus) => setSearch(s => ({ ...s, searchFocus }))}
+      hotkey="ctrl+k"
     />
     {showResults && <SearchResults
       products={products}
