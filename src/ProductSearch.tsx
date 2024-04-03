@@ -1,5 +1,6 @@
 import * as fuzzy from 'fuzzy'
-import { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import useSWRImmutable from 'swr/immutable'
 import { endOfLifeDate, Product } from './endoflife.date.ts'
@@ -9,10 +10,13 @@ import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 export const ProductSearch = ({ onSelect }: {
   onSelect?: (product: Product) => void
 }) => {
-  const [search, setSearch] = useState({ input: '', searchFocus: false, resultsFocus: false })
-  const { products, isLoading } = useFilteredProductList(search.input)
+  const [searchInput, setSearchInput] = useState<string>('')
+  const { products, isLoading } = useFilteredProductList(searchInput)
 
-  const showResults = useMemo(() => search.input && (search.searchFocus || search.resultsFocus), [search])
+  const focus = useRef({ searchBox: false, resultList: false })
+  const [refocused, setRefocused] = useState<boolean>(false)
+
+  const showResults = useMemo(() => searchInput && (focus.current.searchBox || focus.current.resultList), [searchInput, focus, refocused])
 
   const { t } = useTranslation('ui')
 
@@ -20,8 +24,11 @@ export const ProductSearch = ({ onSelect }: {
     <SearchBox
       label={t('product-search.label')}
       placeholder={t('product-search.placeholder')}
-      onChange={(input) => setSearch(s => ({ ...s, input }))}
-      onFocusChange={(searchFocus) => setSearch(s => ({ ...s, searchFocus }))}
+      onChange={setSearchInput}
+      onFocusChange={(hasFocus) => {
+        focus.current.searchBox = hasFocus
+        setRefocused(f => !f)
+      }}
       hotkey="ctrl+k"
     />
     {showResults && <SearchResults
@@ -29,9 +36,13 @@ export const ProductSearch = ({ onSelect }: {
       isLoading={isLoading}
       onSelect={(p) => {
         onSelect?.(p)
-        setSearch(s => ({ ...s, resultsFocus: false }))
+        focus.current.resultList = false
+        setRefocused(f => !f)
       }}
-      onFocusChange={(resultsFocus) => setSearch(s => ({ ...s, resultsFocus }))}
+      onFocusChange={(hasFocus) => {
+        focus.current.resultList = hasFocus
+        setRefocused(f => !f)
+      }}
     />}
   </div>
 }
@@ -42,6 +53,11 @@ const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
   onSelect?: (product: Product) => void
   onFocusChange?: (hasFocus: boolean) => void
 }) => {
+  const { focusedResult } = useSearchResultsHotkeys(products)
+
+  useEffect(() => onFocusChange?.(focusedResult != null), [focusedResult])
+  useHotkeys('esc', () => onFocusChange?.(false), { preventDefault: true })
+
   return <div className="relative">
     <ul
       className="absolute top-2 z-50 block max-h-[66dvh] w-full divide-y divide-element-border overflow-y-auto rounded-lg border border-element-border bg-element-bg p-2 transition-all first:mt-0 last:mb-0"
@@ -52,14 +68,30 @@ const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
         ? <li><SpinnerBars /></li>
         : products?.map(p => (
           <li key={p.productId}>
-            <button
+            <FocusableButton
               className="my-1 w-full content-center rounded p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
+              hasFocus={p.productId === focusedResult?.productId}
               onClick={() => onSelect?.(p)}
-            >{p.name}</button>
+            >{p.name}</FocusableButton>
           </li>
         ))}
     </ul>
   </div>
+}
+
+const FocusableButton = ({ children, hasFocus, onClick, className }: {
+  children: React.ReactNode,
+  hasFocus?: boolean,
+  onClick?: () => void,
+  className?: string
+}) => {
+  const ref = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (hasFocus) ref.current?.focus()
+  }, [hasFocus])
+
+  return <button ref={ref} className={className} onClick={onClick}>{children}</button>
 }
 
 const useFilteredProductList = (searchInput: string) => {
@@ -98,3 +130,34 @@ export const useProductList = (args?: { load?: boolean }) => {
 
   return { products, isLoading }
 }
+
+const useSearchResultsHotkeys = (products?: readonly Product[]) => {
+  const [resultIndex, setResultIndex] = useState<number | undefined>()
+
+  useEffect(() => {
+    if (products != null) setResultIndex(undefined)
+  }, [products])
+
+  const hotkeyOptions = useMemo(() => ({
+    enabled: (products?.length ?? 0) > 0,
+    preventDefault: true,
+    enableOnFormTags: ['input'] as const,
+  }), [products?.length])
+
+  useHotkeys('down', () => setResultIndex(nextSafeIndex(products?.length)), hotkeyOptions, [products?.length])
+  useHotkeys('up', () => setResultIndex(previousSafeIndex(products?.length)), hotkeyOptions, [products?.length])
+
+  const focusedResult = useMemo(() => resultIndex != null ? products?.[resultIndex] : undefined, [products, resultIndex])
+
+  return { focusedResult }
+}
+
+const nextSafeIndex = (arrayLength: number | undefined) => (index: number | undefined) =>
+  (arrayLength && arrayLength > 0)
+    ? (index != null ? Math.min(index + 1, arrayLength - 1) : 0)
+    : undefined
+
+const previousSafeIndex = (arrayLength: number | undefined) => (index: number | undefined) =>
+  (arrayLength && arrayLength > 0)
+    ? (index != null ? Math.max(index - 1, 0) : 0)
+    : undefined
