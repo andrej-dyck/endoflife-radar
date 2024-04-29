@@ -1,20 +1,25 @@
-import { SVGProps, useState } from 'react'
+import { SVGProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dashboard } from './Dashboard.tsx'
+import { Product } from './endoflife.date.ts'
 import { ProductSearch, useProductList } from './ProductSearch.tsx'
+import { pStrings, useUrlState } from './state/useUrlState.ts'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
 export const App = () => {
-  const [productIds, setProductIds] = useState<Set<string>>(new Set([]))
+  const [productIds, setProductIds] = useUrlState('products', pStrings())
+
+  const withProductSelected = (p: Product) =>
+    setProductIds((ps) => ps.some(productId => productId === p.productId) ? ps : [...ps, p.productId])
 
   const { t } = useTranslation('ui')
   return (<>
     <header className="container flex flex-row flex-wrap items-start justify-between gap-2 p-2 pt-8">
       <ScreenTitle text={t('title')} />
-      <ProductSearch onSelect={(p) => setProductIds(ps => new Set([...ps, p.productId]))} />
+      <ProductSearch onSelect={withProductSelected} />
     </header>
     <main className="container pb-4">
-      <Dashboard products={[...productIds].map(productId => ({ productId }))} />
+      <Dashboard products={productIds.map(productId => ({ productId }))} />
     </main>
   </>)
 }
