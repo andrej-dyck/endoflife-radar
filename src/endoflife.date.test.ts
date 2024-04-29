@@ -176,6 +176,9 @@ describe('endoflife.data', () => {
             "productId": "centos-stream",
           },
           {
+            "productId": "centreon",
+          },
+          {
             "productId": "cert-manager",
           },
           {
@@ -306,6 +309,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "firefox",
+          },
+          {
+            "productId": "fluent-bit",
           },
           {
             "productId": "flux",
@@ -456,6 +462,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "kubernetes",
+          },
+          {
+            "productId": "kubernetes-csi-node-driver-registrar",
           },
           {
             "productId": "laravel",
@@ -620,6 +629,9 @@ describe('endoflife.data', () => {
             "productId": "opensuse",
           },
           {
+            "productId": "opentofu",
+          },
+          {
             "productId": "openwrt",
           },
           {
@@ -684,6 +696,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "postgresql",
+          },
+          {
+            "productId": "postmarketos",
           },
           {
             "productId": "powershell",
@@ -791,6 +806,9 @@ describe('endoflife.data', () => {
             "productId": "sharepoint",
           },
           {
+            "productId": "shopware",
+          },
+          {
             "productId": "silverstripe",
           },
           {
@@ -806,6 +824,9 @@ describe('endoflife.data', () => {
             "productId": "sonar",
           },
           {
+            "productId": "sourcegraph",
+          },
+          {
             "productId": "splunk",
           },
           {
@@ -819,6 +840,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "squid",
+          },
+          {
+            "productId": "steamos",
           },
           {
             "productId": "surface",
@@ -1009,18 +1033,22 @@ describe('cycle-state', () => {
     },
     {
       cycle: { cycle: '4', eol: furtherFutureDate, lts: futureDate },
+      expectedState: { state: 'active-support', isLts: false } satisfies CycleState,
+    },
+    {
+      cycle: { cycle: '5', eol: futureDate, lts: earlierDate },
       expectedState: { state: 'active-support', isLts: true } satisfies CycleState,
     },
     {
-      cycle: { cycle: '5', eol: false, support: false, lts: true },
+      cycle: { cycle: '6', eol: false, support: false, lts: true },
       expectedState: { state: 'security-support', isLts: true } satisfies CycleState,
     },
     {
-      cycle: { cycle: '6', eol: false, support: false, lts: false },
+      cycle: { cycle: '7', eol: false, support: false, lts: false },
       expectedState: { state: 'security-support', isLts: false } satisfies CycleState,
     },
     {
-      cycle: { cycle: '6', eol: false, support: false },
+      cycle: { cycle: '8', eol: false, support: false },
       expectedState: { state: 'security-support', isLts: undefined } satisfies CycleState,
     },
   ])('is LTS; %j', ({ cycle, expectedState }) => {

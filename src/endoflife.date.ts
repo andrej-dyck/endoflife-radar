@@ -88,7 +88,7 @@ export const cycleState = (cycle: Cycle) => (now: Date): CycleState => {
     isDate(discontinued) ? discontinued : undefined
 
   const isLts = ({ lts }: Pick<Cycle, 'lts'>) =>
-    lts != null ? isDate(lts) ? true : lts : undefined
+    lts != null ? isDate(lts) ? lts <= now : lts : undefined
 
   return match(cycle)
     .returnType<CycleState>()
