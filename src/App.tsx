@@ -9,17 +9,20 @@ import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 export const App = () => {
   const [productIds, setProductIds] = useUrlState('products', pStrings())
 
-  const withProductSelected = (p: Product) =>
+  const withProduct = (p: Product) =>
     setProductIds((ps) => ps.some(productId => productId === p.productId) ? ps : [...ps, p.productId])
+
+  const withoutProduct = (p: Product) =>
+    setProductIds((ps) => ps.filter(productId => productId !== p.productId))
 
   const { t } = useTranslation('ui')
   return (<>
     <header className="container flex flex-row flex-wrap items-start justify-between gap-2 p-2 pt-8">
       <ScreenTitle text={t('title')} />
-      <ProductSearch onSelect={withProductSelected} />
+      <ProductSearch onSelect={withProduct} />
     </header>
     <main className="container pb-4">
-      <Dashboard products={productIds.map(productId => ({ productId }))} />
+      <Dashboard products={productIds.map(productId => ({ productId }))} onRemove={withoutProduct} />
     </main>
   </>)
 }

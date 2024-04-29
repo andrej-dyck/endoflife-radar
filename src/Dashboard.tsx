@@ -6,14 +6,20 @@ import { cn } from './ui-components/cn.tsx'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
-export const Dashboard = ({ products }: { products: Products }) => {
-  return <div
+export const Dashboard = ({ products, onRemove }: {
+  products: Products,
+  onRemove?: (p: Product) => void,
+}) => (
+  <div
     className="grid grid-cols-1 place-content-center justify-items-stretch gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-    {products.map(p => <ProductCard key={p.productId} product={p} />)}
+    {products.map(p => <ProductCard key={p.productId} product={p} onRemove={onRemove} />)}
   </div>
-}
+)
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ product, onRemove }: {
+  product: Product,
+  onRemove?: (p: Product) => void,
+}) => {
   const { name, cycles, href, isLoading } = useProductEolInfo(product)
   const systemTime = useMemo(() => new Date(Date.now()), [])
 
@@ -23,7 +29,10 @@ const ProductCard = ({ product }: { product: Product }) => {
     className="flex h-52 flex-col overflow-hidden rounded-xl border border-element-border bg-element-bg px-3 py-2"
   >
     {isLoading ? <SpinnerBars /> : (<>
-      <h2 className="line-clamp-1">{name}</h2>
+      <div className="flex place-content-between items-center">
+        <h2 className="line-clamp-1">{name}</h2>
+        {onRemove && <button onClick={() => onRemove(product)}><RemoveIcon className={iconClass} /></button>}
+      </div>
       <div className="grow">
         {cycles && <ProductCycles cycles={cycles} systemTime={systemTime} />}
       </div>
@@ -35,15 +44,22 @@ const ProductCard = ({ product }: { product: Product }) => {
   </div>
 }
 
-const ProductCycles = ({ cycles, systemTime }: { cycles: Cycles, systemTime: Date }) => {
-  return <div className="flex h-full flex-col gap-2 p-2">
+const ProductCycles = ({ cycles, systemTime }: {
+  cycles: Cycles,
+  systemTime: Date,
+}) => (
+  <div className="flex h-full flex-col gap-2 p-2">
     {cycles.slice(0, 3).map((c, i) => (
       <ProductCycle key={c.cycle} cycle={c} isLatest={i === 0} systemTime={systemTime} />
     ))}
   </div>
-}
+)
 
-const ProductCycle = ({ cycle, isLatest, systemTime }: { cycle: Cycle, isLatest?: boolean, systemTime: Date }) => {
+const ProductCycle = ({ cycle, isLatest, systemTime }: {
+  cycle: Cycle,
+  isLatest?: boolean,
+  systemTime: Date,
+}) => {
   const state = useMemo<CycleState>(() => cycleState(cycle)(systemTime), [cycle, systemTime])
 
   return <span className="inline-flex items-center gap-2">
@@ -55,14 +71,13 @@ const ProductCycle = ({ cycle, isLatest, systemTime }: { cycle: Cycle, isLatest?
   </span>
 }
 
-const ProductCycleState = ({ state }: { state: CycleState }) => {
-  return state.state === 'active-support' && state.isLts ? <StarCheckIcon className="text-amber-300" /> :
+const ProductCycleState = ({ state }: { state: CycleState }) =>
+  state.state === 'active-support' && state.isLts ? <StarCheckIcon className="text-amber-300" /> :
     state.state === 'active-support' ? <CheckIcon className="text-green-600" /> :
       state.state === 'security-support' ? <SafetyCheckIcon className="text-orange-600" /> :
         state.state === 'discontinued' ? <ReleaseAlertIcon className="text-orange-600" /> :
           state.state === 'unsupported' ? <StopIcon className="text-red-700" /> :
             <UnknownIcon />
-}
 
 /** material-symbols:feature-search-outline */
 const MagnifyIcon = (props: SVGProps<SVGSVGElement>) => (
@@ -120,5 +135,13 @@ const UnknownIcon = (props: SVGProps<SVGSVGElement>) => (
       d="M29.391 14.527L17.473 2.609C17.067 2.203 16.533 2 16 2s-1.067.203-1.473.609L2.609 14.527C2.203 14.933 2 15.466 2 16s.203 1.067.609 1.473L14.526 29.39c.407.407.941.61 1.474.61s1.067-.203 1.473-.609L29.39 17.474c.407-.407.61-.94.61-1.474s-.203-1.067-.609-1.473M16 24a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3m1.125-6.752v1.877h-2.25V15H17c1.034 0 1.875-.841 1.875-1.875S18.034 11.25 17 11.25h-2a1.877 1.877 0 0 0-1.875 1.875v.5h-2.25v-.5A4.13 4.13 0 0 1 15 9h2a4.13 4.13 0 0 1 4.125 4.125a4.13 4.13 0 0 1-4 4.123"></path>
     <path fill="none"
       d="M16 21a1.5 1.5 0 1 1-.001 3.001A1.5 1.5 0 0 1 16 21m1.125-3.752a4.13 4.13 0 0 0 4-4.123A4.13 4.13 0 0 0 17 9h-2a4.13 4.13 0 0 0-4.125 4.125v.5h2.25v-.5c0-1.034.841-1.875 1.875-1.875h2c1.034 0 1.875.841 1.875 1.875S18.034 15 17 15h-2.125v4.125h2.25z"></path>
+  </svg>
+)
+
+/** material-symbols:playlist-remove-rounded */
+const RemoveIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+    <path fill="currentColor"
+      d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5t.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5t-.288.713T19 6v13q0 .825-.587 1.413T17 21zm5-7.1l1.9 1.9q.275.275.7.275t.7-.275t.275-.7t-.275-.7l-1.9-1.9l1.9-1.9q.275-.275.275-.7t-.275-.7t-.7-.275t-.7.275L12 11.1l-1.9-1.9q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7l1.9 1.9l-1.9 1.9q-.275.275-.275.7t.275.7t.7.275t.7-.275z"></path>
   </svg>
 )
