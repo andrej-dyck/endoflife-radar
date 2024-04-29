@@ -18,6 +18,9 @@ const onExactKey = (code: string, callback: InputEventHandler, options?: InputEv
     }
   }
 
+export const pipeEvents = (...handle: readonly InputEventHandler[]): InputEventHandler =>
+  (event) => handle.forEach(h => h(event))
+
 export const stopPropagation = (event: React.SyntheticEvent) => {
   event.preventDefault()
   event.stopPropagation()
