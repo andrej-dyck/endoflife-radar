@@ -15,6 +15,7 @@ export const Dashboard = ({ products }: { products: Products }) => {
 
 const ProductCard = ({ product }: { product: Product }) => {
   const { name, cycles, href, isLoading } = useProductEolInfo(product)
+  const systemTime = useMemo(() => new Date(Date.now()), [])
 
   const iconClass = 'size-6 rounded-full transition-all p-1 hover:ring hover:ring-focus focus:ring focus:ring-focus'
 
@@ -24,7 +25,7 @@ const ProductCard = ({ product }: { product: Product }) => {
     {isLoading ? <SpinnerBars /> : (<>
       <h2 className="line-clamp-1">{name}</h2>
       <div className="grow">
-        {cycles && <ProductCycles cycles={cycles} />}
+        {cycles && <ProductCycles cycles={cycles} systemTime={systemTime} />}
       </div>
       <div className="flex justify-end gap-1">
         <Link to={`/eol/${product.productId}`}><MagnifyIcon className={iconClass} /></Link>
@@ -34,16 +35,16 @@ const ProductCard = ({ product }: { product: Product }) => {
   </div>
 }
 
-const ProductCycles = ({ cycles }: { cycles: Cycles }) => {
+const ProductCycles = ({ cycles, systemTime }: { cycles: Cycles, systemTime: Date }) => {
   return <div className="flex h-full flex-col gap-2 p-2">
-    {cycles.length === 0 ? 'N/A'
-      : cycles.slice(0, 3).map((c, i) => <ProductCycle key={c.cycle} cycle={c} isLatest={i === 0} />)}
+    {cycles.slice(0, 3).map((c, i) => (
+      <ProductCycle key={c.cycle} cycle={c} isLatest={i === 0} systemTime={systemTime} />
+    ))}
   </div>
 }
 
-const ProductCycle = ({ cycle, isLatest }: { cycle: Cycle, isLatest?: boolean }) => {
-  // TODO extract date now
-  const state = useMemo<CycleState>(() => cycleState(cycle)(new Date(Date.now())), [cycle])
+const ProductCycle = ({ cycle, isLatest, systemTime }: { cycle: Cycle, isLatest?: boolean, systemTime: Date }) => {
+  const state = useMemo<CycleState>(() => cycleState(cycle)(systemTime), [cycle, systemTime])
 
   return <span className="inline-flex items-center gap-2">
     <ProductCycleState state={state} />
