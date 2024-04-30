@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v3
+      with:
+        version: 8
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'pnpm'
+    - name: Dependencies
+      run: pnpm i
+    - name: Typecheck
+      run: pnpm typecheck
+    - name: Lint
+      run: pnpm lint
+    - name: Test
+      run: pnpm test
+    - name: Build
+      run: pnpm build
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: ./dist/
+        retention-days: 1

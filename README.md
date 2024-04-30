@@ -1,5 +1,7 @@
 # End-of-Life Radar
 
+![build](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/ci.yml/badge.svg?branch=main)
+
 An end-of-life radar for your projects using [endoflife.date](https://endoflife.date/).
 
 ## Development

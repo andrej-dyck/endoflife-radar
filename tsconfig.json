@@ -12,6 +12,6 @@
 
     /* Libs */
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "types": ["node", "vite/client", "src/product.d.ts"]
+    "types": ["node", "vite/client"]
   }
 }
