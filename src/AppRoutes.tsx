@@ -13,7 +13,9 @@ const router = () => createBrowserRouter([
   { path: '/', element: <App /> },
   { path: '/all', element: <AllProductsDashboard /> },
   { path: '/eol/:productId', element: <EndOfProductLife /> },
-].map(withErrorBoundary))
+].map(withErrorBoundary), {
+  basename: '/endoflife-radar',
+})
 
 const withErrorBoundary = (route: RouteObject) =>
   ({ ...route, errorElement: <ErrorBoundary /> })

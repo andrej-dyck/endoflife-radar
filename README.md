@@ -1,6 +1,7 @@
 # End-of-Life Radar
 
-![build](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/ci.yml/badge.svg?branch=main)
+![Build](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/ci.yml/badge.svg?branch=main)
+![GitHub Pages](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/deploy-gh-pages.yml/badge.svg)
 
 An end-of-life radar for your projects using [endoflife.date](https://endoflife.date/).
 
