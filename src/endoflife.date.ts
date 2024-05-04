@@ -61,7 +61,7 @@ const cycles = z.array(cycle)
 /** Derived Cycle State */
 export type CycleState = { state: 'unknown' }
   | { state: 'active-support', endDate?: Date, securityEndDate?: Date, isLts?: boolean }
-  | { state: 'security-support', endDate?: Date, isLts?: boolean }
+  | { state: 'extended-support', endDate?: Date, isLts?: boolean }
   | { state: 'discontinued', onDate?: Date, supportEndDate?: Date }
   | { state: 'unsupported', supportEndDate?: Date }
 
@@ -99,7 +99,7 @@ export const cycleState = (cycle: Cycle) => (now: Date): CycleState => {
       { state: 'discontinued', onDate: discontinuedDate(c), supportEndDate: eolDate(c) }
     ))
     .with({ eol: P.when(isNotEol), support: P.when(supportEnded) }, (c) => (
-      { state: 'security-support', endDate: eolDate(c) ?? supportEndDate(c), isLts: isLts(c) }
+      { state: 'extended-support', endDate: eolDate(c) ?? supportEndDate(c), isLts: isLts(c) }
     ))
     .with({ eol: P.when(isNotEol) }, (c) => (
       { state: 'active-support', endDate: supportEndDate(c) ?? eolDate(c), securityEndDate: eolDate(c), isLts: isLts(c) }

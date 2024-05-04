@@ -74,7 +74,7 @@ const ProductCycle = ({ cycle, isLatest, systemTime }: {
 const ProductCycleState = ({ state }: { state: CycleState }) =>
   state.state === 'active-support' && state.isLts ? <StarCheckIcon className="text-amber-300" /> :
     state.state === 'active-support' ? <CheckIcon className="text-green-600" /> :
-      state.state === 'security-support' ? <SafetyCheckIcon className="text-orange-600" /> :
+      state.state === 'extended-support' ? <SafetyCheckIcon className="text-orange-600" /> :
         state.state === 'discontinued' ? <ReleaseAlertIcon className="text-orange-600" /> :
           state.state === 'unsupported' ? <StopIcon className="text-red-700" /> :
             <UnknownIcon />

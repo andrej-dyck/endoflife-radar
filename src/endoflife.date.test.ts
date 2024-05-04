@@ -1000,21 +1000,21 @@ describe('cycle-state', () => {
   test.each([
     {
       cycle: { cycle: '1', eol: false, support: false },
-      expectedState: { state: 'security-support' } satisfies CycleState,
+      expectedState: { state: 'extended-support' } satisfies CycleState,
     },
     {
       cycle: { cycle: '2', eol: false, support: earlierDate },
-      expectedState: { state: 'security-support', endDate: earlierDate } satisfies CycleState,
+      expectedState: { state: 'extended-support', endDate: earlierDate } satisfies CycleState,
     },
     {
       cycle: { cycle: '3', eol: futureDate, support: false },
-      expectedState: { state: 'security-support', endDate: futureDate } satisfies CycleState,
+      expectedState: { state: 'extended-support', endDate: futureDate } satisfies CycleState,
     },
     {
       cycle: { cycle: '4', eol: futureDate, support: earlierDate },
-      expectedState: { state: 'security-support', endDate: futureDate } satisfies CycleState,
+      expectedState: { state: 'extended-support', endDate: futureDate } satisfies CycleState,
     },
-  ])('security-support; %j', ({ cycle, expectedState }) => {
+  ])('extended-support; %j', ({ cycle, expectedState }) => {
     expect(cycleState(cycle)(now)).toMatchObject(expectedState)
   })
 
@@ -1041,15 +1041,15 @@ describe('cycle-state', () => {
     },
     {
       cycle: { cycle: '6', eol: false, support: false, lts: true },
-      expectedState: { state: 'security-support', isLts: true } satisfies CycleState,
+      expectedState: { state: 'extended-support', isLts: true } satisfies CycleState,
     },
     {
       cycle: { cycle: '7', eol: false, support: false, lts: false },
-      expectedState: { state: 'security-support', isLts: false } satisfies CycleState,
+      expectedState: { state: 'extended-support', isLts: false } satisfies CycleState,
     },
     {
       cycle: { cycle: '8', eol: false, support: false },
-      expectedState: { state: 'security-support', isLts: undefined } satisfies CycleState,
+      expectedState: { state: 'extended-support', isLts: undefined } satisfies CycleState,
     },
   ])('is LTS; %j', ({ cycle, expectedState }) => {
     expect(cycleState(cycle)(now)).toMatchObject(expectedState)
