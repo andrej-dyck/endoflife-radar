@@ -54,7 +54,8 @@ const cycle = z.object({
   latestReleaseDate: isoDate.nullish(), // date of the latest release in this cycle
   link: z.string().url().nullish(), // link to changelog for the latest release
   support: z.boolean().or(isoDate).nullish(), // whether this release cycle has active support (true); or a date when support has ended
-  discontinued: z.boolean().or(isoDate).nullish(), // whether this cycle is now discontinued (false); or a date when product was discontinued
+  // TODO extendedSupport
+  discontinued: z.boolean().or(isoDate).nullish(), // whether this cycle is now discontinued (true); or a date when product was discontinued
 })
 const cycles = z.array(cycle)
 
