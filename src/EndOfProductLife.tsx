@@ -24,7 +24,6 @@ export const EndOfProductLife = () => {
   </>
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useProductEolInfo = ({ productId }: Product) => {
   const { data, isLoading } = useSWRImmutable({ key: 'product-eol', productId }, endOfLifeDate().product)
 

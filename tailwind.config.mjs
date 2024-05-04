@@ -1,4 +1,6 @@
-const colors = require('tailwindcss/colors')
+// @ts-check
+
+import colors from 'tailwindcss/colors'
 
 /** @type {import('tailwindcss').Config} */
 export default {

@@ -112,7 +112,6 @@ const useFilteredProductList = (searchInput: string) => {
 
 type LocalizedProduct = Product & { readonly name: string }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useProductList = (args?: { load?: boolean }) => {
   const { data, isLoading } = useSWRImmutable(
     args?.load == null || args.load ? 'product-list' : null,
