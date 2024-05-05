@@ -1072,6 +1072,10 @@ describe('cycle-state', () => {
       cycle: { cycle: '4', eol: futureDate, discontinued: earlierDate },
       expectedState: { state: 'discontinued', onDate: earlierDate, supportEndDate: futureDate } satisfies CycleState,
     },
+    {
+      cycle: { cycle: '4', eol: futureDate, discontinued: now },
+      expectedState: { state: 'discontinued', onDate: now, supportEndDate: futureDate } satisfies CycleState,
+    },
   ])('discontinued; %j', ({ cycle, expectedState }) => {
     expect(cycleState(cycle)(now)).toEqual(expectedState)
   })

@@ -83,7 +83,7 @@ export const cycleState = (cycle: Cycle) => (now: Date): CycleState => {
     isDate(support) ? support : undefined
 
   const isDiscontinued = (discontinued: Cycle['discontinued']) =>
-    discontinued === true || (isDate(discontinued) && discontinued < now)
+    discontinued === true || (isDate(discontinued) && discontinued <= now)
 
   const discontinuedDate = ({ discontinued }: Pick<Cycle, 'discontinued'>) =>
     isDate(discontinued) ? discontinued : undefined
