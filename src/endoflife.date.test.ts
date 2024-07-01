@@ -104,6 +104,9 @@ describe('endoflife.data', () => {
             "productId": "apache-cassandra",
           },
           {
+            "productId": "apache-flink",
+          },
+          {
             "productId": "apache-groovy",
           },
           {
@@ -216,6 +219,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "contao",
+          },
+          {
+            "productId": "contour",
           },
           {
             "productId": "cortex-xdr",
@@ -467,6 +473,9 @@ describe('endoflife.data', () => {
             "productId": "kubernetes-csi-node-driver-registrar",
           },
           {
+            "productId": "kubernetes-node-feature-discovery",
+          },
+          {
             "productId": "laravel",
           },
           {
@@ -558,6 +567,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "neo4j",
+          },
+          {
+            "productId": "neos",
           },
           {
             "productId": "netbsd",
@@ -932,7 +944,13 @@ describe('endoflife.data', () => {
             "productId": "windows-embedded",
           },
           {
+            "productId": "windows-nano-server",
+          },
+          {
             "productId": "windows-server",
+          },
+          {
+            "productId": "windows-server-core",
           },
           {
             "productId": "wordpress",
