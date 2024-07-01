@@ -25,19 +25,24 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: ./dist/
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ github.token }}
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v3
+      with:
+        version: 9
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'pnpm'
+    - name: Dependencies
+      run: pnpm i
+    - name: Build for GitHub Pages
+      run: pnpm build:gh-pages
+    - name: Setup GitHub Pages
+      uses: actions/configure-pages@v5
+    - name: Upload Artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './dist'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:gh-pages": "tsc && vite build --base=/endoflife-radar",
     "typecheck": "tsc",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "test": "vitest run",
@@ -28,6 +29,9 @@
   "devDependencies": {
     "@eslint/compat": "1.1.0",
     "@eslint/js": "9.6.0",
+    "@testing-library/dom": "10.2.0",
+    "@testing-library/jest-dom": "6.4.6",
+    "@testing-library/react": "16.0.0",
     "@types/eslint": "8.56.10",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
@@ -38,6 +42,7 @@
     "eslint-plugin-react-hooks": "4.6.2",
     "eslint-plugin-tailwindcss": "3.17.4",
     "globals": "15.7.0",
+    "jsdom": "24.1.0",
     "postcss": "8.4.39",
     "postcss-load-config": "6.0.1",
     "react": "18.3.1",

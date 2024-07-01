@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import useSWRImmutable from 'swr/immutable'
 import { z } from 'zod'
-import { ScreenTitle } from './App.tsx'
 import { endOfLifeDate, Product } from './endoflife.date.ts'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
+import { ScreenTitle } from './ui-components/ScreenTitle.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
 export const EndOfProductLife = () => {
