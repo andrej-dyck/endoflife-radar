@@ -1,19 +1,22 @@
 // @ts-check
 
 import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
+import tsEslint from 'typescript-eslint'
 
-// import reactHooks from 'eslint-plugin-react-hooks'
-// import reactRefresh from 'eslint-plugin-react-refresh'
-// import tailwindcss from 'eslint-plugin-tailwindcss'
+import { fixupPluginRules } from '@eslint/compat'
+import globals from 'globals'
 
-export default tseslint.config(
+import eslintReact from 'eslint-plugin-react'
+import eslintReactHooks from 'eslint-plugin-react-hooks'
+import eslintTailwindcss from 'eslint-plugin-tailwindcss'
+
+export default tsEslint.config(
   {
     ignores: ['**/dist/**', '**/.idea/**', '**/node_modules/**'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+  ...tsEslint.configs.strictTypeChecked,
+  ...tsEslint.configs.stylisticTypeChecked,
   {
     languageOptions: {
       ecmaVersion: 2023,
@@ -48,6 +51,7 @@ export default tseslint.config(
       /* typescript */
       '@typescript-eslint/consistent-type-definitions': 'off',
       '@typescript-eslint/no-confusing-void-expression': ['error', { ignoreArrowShorthand: true }],
+      '@typescript-eslint/no-unused-vars': 'off', // enforced by tsconfig
       '@typescript-eslint/prefer-readonly': ['warn'],
       '@typescript-eslint/space-before-blocks': ['error'],
       '@typescript-eslint/switch-exhaustiveness-check': ['warn'],
@@ -57,15 +61,40 @@ export default tseslint.config(
         overrides: { arrow: { before: true, after: true } },
       }],
 
-      /* react */
-      // 'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-
       /* tailwind */
       // 'tailwindcss/no-custom-classname': 'off'
     },
   },
   {
     files: ['**/*.js', '**/*.mjs'],
-    ...tseslint.configs.disableTypeChecked,
+    ...tsEslint.configs.disableTypeChecked,
+  },
+  {
+    files: ['expert-ui/src/**/*.tsx'],
+    plugins: {
+      'react': eslintReact,
+      'react-hooks': fixupPluginRules(eslintReactHooks),
+      'tailwindcss': eslintTailwindcss,
+    },
+    settings: {
+      'react': {
+        version: 'detect',
+      },
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+      globals: {
+        ...globals.browser,
+      },
+    },
+    rules: {
+      ...eslintReact.configs.recommended.rules,
+      ...eslintReactHooks.configs.recommended.rules,
+      'react/react-in-jsx-scope': 0,
+      'react/jsx-uses-react': 0,
+      ...eslintTailwindcss.configs.recommended.rules,
+    },
   }
 )
