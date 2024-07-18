@@ -41,6 +41,11 @@ Run linter.
 pnpm lint
 ```
 
+Run typecheck, lint, and tests.
+```bash
+pnpm check
+```
+
 ### Production Build
 
 ```bash
