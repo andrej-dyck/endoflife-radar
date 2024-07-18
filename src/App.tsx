@@ -4,21 +4,18 @@ import { AllProductsDashboard, Dashboard } from './Dashboard.tsx'
 import { EndOfProductLife } from './EndOfProductLife.tsx'
 
 export const App = () =>
-  <>
-    <RouterProvider
-      router={appRouter()}
-      fallbackElement={<Loading />}
-    />
-  </>
+  <RouterProvider router={appRouter()} />
 
 const appRouter = () => createBrowserRouter(
   [
     { path: '/', element: <Dashboard /> },
     { path: '/all', element: <AllProductsDashboard /> },
     { path: '/eol/:productId', element: <EndOfProductLife /> },
-  ].map(
-    (r) => ({ ...r, errorElement: <ErrorBoundary /> })
-  ),
+  ].map((r) => ({
+    ...r,
+    errorElement: <ErrorBoundary />,
+    hydrateFallbackElement: <Loading />,
+  })),
   { basename: import.meta.env.BASE_URL }
 )
 

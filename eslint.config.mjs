@@ -3,7 +3,6 @@
 import eslint from '@eslint/js'
 import tsEslint from 'typescript-eslint'
 
-import { fixupPluginRules } from '@eslint/compat'
 import globals from 'globals'
 
 import eslintReact from 'eslint-plugin-react'
@@ -39,6 +38,7 @@ export default tsEslint.config(
         'exports': 'only-multiline',
         'functions': 'never',
       }],
+      'space-before-blocks': ['warn'],
       'space-unary-ops': ['warn'],
       'consistent-return': ['warn'],
       'eol-last': ['warn'],
@@ -53,13 +53,7 @@ export default tsEslint.config(
       '@typescript-eslint/no-confusing-void-expression': ['error', { ignoreArrowShorthand: true }],
       '@typescript-eslint/no-unused-vars': 'off', // enforced by tsconfig
       '@typescript-eslint/prefer-readonly': ['warn'],
-      '@typescript-eslint/space-before-blocks': ['error'],
       '@typescript-eslint/switch-exhaustiveness-check': ['warn'],
-      '@typescript-eslint/type-annotation-spacing': ['error', {
-        before: false,
-        after: true,
-        overrides: { arrow: { before: true, after: true } },
-      }],
 
       /* tailwind */
       // 'tailwindcss/no-custom-classname': 'off'
@@ -73,7 +67,7 @@ export default tsEslint.config(
     files: ['expert-ui/src/**/*.tsx'],
     plugins: {
       'react': eslintReact,
-      'react-hooks': fixupPluginRules(eslintReactHooks),
+      'react-hooks': eslintReactHooks,
       'tailwindcss': eslintTailwindcss,
     },
     settings: {
