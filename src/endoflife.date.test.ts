@@ -119,6 +119,9 @@ describe('endoflife.data', () => {
             "productId": "apache-kafka",
           },
           {
+            "productId": "apache-lucene",
+          },
+          {
             "productId": "apache-spark",
           },
           {
@@ -171,6 +174,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "cakephp",
+          },
+          {
+            "productId": "calico",
           },
           {
             "productId": "centos",
@@ -237,6 +243,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "dbt-core",
+          },
+          {
+            "productId": "dce",
           },
           {
             "productId": "debian",
@@ -374,6 +383,9 @@ describe('endoflife.data', () => {
             "productId": "haproxy",
           },
           {
+            "productId": "harbor",
+          },
+          {
             "productId": "hashicorp-vault",
           },
           {
@@ -474,6 +486,9 @@ describe('endoflife.data', () => {
           },
           {
             "productId": "kubernetes-node-feature-discovery",
+          },
+          {
+            "productId": "kyverno",
           },
           {
             "productId": "laravel",
