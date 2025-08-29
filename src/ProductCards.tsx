@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router'
-import { type Cycle, type Cycles, cycleState, type CycleState, type Product, type Products } from './endoflife.date.ts'
+import { match } from 'ts-pattern'
+import { type Cycle, type Cycles, cycleState, type CycleState, type Product, type Products } from './apiEndoflifeDate.ts'
 import { useProductEolInfo } from './EndOfProductLife.tsx'
-import { withSvgProps } from './ui-components/withSvgProps.tsx'
-import { cns } from './ui-components/twMerge.tsx'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
+import { cns } from './ui-components/twMerge.tsx'
+import { withSvgProps } from './ui-components/withSvgProps.tsx'
 
 export const ProductCards = ({ products, onRemove }: {
   products: Products,
@@ -72,12 +73,16 @@ const ProductCycle = ({ cycle, isLatest, systemTime }: {
 }
 
 const ProductCycleState = ({ state }: { state: CycleState }) =>
-  state.state === 'active-support' && state.isLts ? <StarCheckIcon className="text-amber-300" /> :
-    state.state === 'active-support' ? <CheckIcon className="text-green-600" /> :
-      state.state === 'extended-support' ? <SafetyCheckIcon className="text-orange-600" /> :
-        state.state === 'discontinued' ? <ReleaseAlertIcon className="text-orange-600" /> :
-          state.state === 'unsupported' ? <StopIcon className="text-red-700" /> :
-            <UnknownIcon />
+  useMemo(
+    () => match(state)
+      .with({ state: 'active-support', isLts: true }, () => <StarCheckIcon className="text-amber-300" />)
+      .with({ state: 'active-support', isLts: false }, () => <CheckIcon className="text-green-600" />)
+      .with({ state: 'extended-support' }, () => <SafetyCheckIcon className="text-orange-600" />)
+      .with({ state: 'discontinued' }, () => <ReleaseAlertIcon className="text-orange-600" />)
+      .with({ state: 'unsupported' }, () => <StopIcon className="text-red-700" />)
+      .otherwise(() => <UnknownIcon />),
+    [state]
+  )
 
 /** material-symbols:feature-search-outline */
 const MagnifyIcon = withSvgProps((props) =>
