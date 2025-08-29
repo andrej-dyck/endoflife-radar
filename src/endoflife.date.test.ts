@@ -33,10 +33,13 @@ describe('endoflife.data', () => {
 
   test('all products have a translation', async () => {
     const { products } = await eol.allProducts()
+    const productIds = products.map(p => p.productId)
 
-    for (const { productId } of products) {
-      expect.soft(en.products).toHaveProperty(productId)
-    }
+    expect(
+      Object.keys(en.products).sort()
+    ).toEqual(
+      productIds.sort()
+    )
   })
 })
 
