@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { type Product } from './endoflife.date.ts'
+import { type Product } from './apiEndoflifeDate.ts'
 import { ProductCards } from './ProductCards.tsx'
 import { ProductSearch, useProductList } from './ProductSearch.tsx'
 import { pStrings, useUrlState } from './state/useUrlState.ts'

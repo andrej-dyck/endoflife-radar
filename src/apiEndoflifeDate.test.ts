@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest'
-import { type CycleState, cycleState, endOfLifeDate } from './endoflife.date.ts'
+import { type CycleState, cycleState, apiEndoflifeDate } from './apiEndoflifeDate.ts'
 
 import en from './locale/en.json' assert { type: 'json ' }
 
 describe('endoflife.data', () => {
-  const eol = endOfLifeDate()
+  const eol = apiEndoflifeDate()
 
   test('all product cycles can be parsed', async () => {
     const { products } = await eol.allProducts()

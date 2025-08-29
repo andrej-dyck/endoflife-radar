@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import useSWRImmutable from 'swr/immutable'
-import { endOfLifeDate, type Product } from './endoflife.date.ts'
+import { apiEndoflifeDate, type Product } from './apiEndoflifeDate.ts'
 import { SearchBox } from './ui-components/SearchBox.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
@@ -115,7 +115,7 @@ type LocalizedProduct = Product & { readonly name: string }
 export const useProductList = (args?: { load?: boolean }) => {
   const { data, isLoading } = useSWRImmutable(
     args?.load == null || args.load ? 'product-list' : null,
-    endOfLifeDate().allProducts
+    apiEndoflifeDate().allProducts
   )
 
   const { t } = useTranslation('products')

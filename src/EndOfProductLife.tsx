@@ -1,14 +1,16 @@
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router'
 import useSWRImmutable from 'swr/immutable'
-import { z } from 'zod'
-import { endOfLifeDate, type Product } from './endoflife.date.ts'
+import { z } from 'zod/mini'
+import { apiEndoflifeDate, type Product } from './apiEndoflifeDate.ts'
+import { useParsedParams } from './state/useParsedParams.ts'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
 import { ScreenTitle } from './ui-components/ScreenTitle.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
 export const EndOfProductLife = () => {
-  const product = z.object({ productId: z.string() }).parse(useParams())
+  const product = useParsedParams(
+    z.object({ productId: z.string().check(z.minLength(1)) })
+  )
   const { name, href, cycles, isLoading } = useProductEolInfo(product)
 
   return <>
@@ -25,7 +27,7 @@ export const EndOfProductLife = () => {
 }
 
 export const useProductEolInfo = ({ productId }: Product) => {
-  const { data, isLoading } = useSWRImmutable({ key: 'product-eol', productId }, endOfLifeDate().product)
+  const { data, isLoading } = useSWRImmutable({ key: 'product-eol', productId }, apiEndoflifeDate().product)
 
   const { t } = useTranslation(['products'])
 
