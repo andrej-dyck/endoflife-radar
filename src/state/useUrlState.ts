@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
 
 export const useUrlState = <TState>(
   key: string,
@@ -32,7 +32,7 @@ export const useUrlState = <TState>(
   return [state, setUrlState]
 }
 
-type Transformation<TState> = {
+export type Transformation<TState> = {
   initial: TState
   parse: (s: string) => TState
   serialize: (s: TState) => string

@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import useSWRImmutable from 'swr/immutable'
-import { endOfLifeDate, Product } from './endoflife.date.ts'
+import { endOfLifeDate, type Product } from './endoflife.date.ts'
 import { SearchBox } from './ui-components/SearchBox.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 

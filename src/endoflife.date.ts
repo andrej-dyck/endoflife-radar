@@ -1,6 +1,5 @@
 import { match, P } from 'ts-pattern'
-import { z, ZodType, ZodTypeDef } from 'zod'
-import { fromZodError } from 'zod-validation-error'
+import { z, ZodType } from 'zod'
 
 export type Products = z.infer<typeof products>
 export type Product = z.infer<typeof product>
@@ -23,10 +22,10 @@ export const endOfLifeDate = (
   }
 }
 
-const parse = <TOut, TIn>(schema: ZodType<TOut, ZodTypeDef, TIn>, data: unknown): TOut => {
+const parse = <TOut, TIn>(schema: ZodType<TOut, TIn>, data: unknown): TOut => {
   const parsed = schema.safeParse(data)
   if (!parsed.success) {
-    const message = fromZodError(parsed.error).toString()
+    const message = z.prettifyError(parsed.error)
     console.error(message, data)
     throw new Error(message)
   }
@@ -40,7 +39,7 @@ const products = z.array(product)
 
 const isoDate = z.string()
   .regex(/\d{4}-\d{2}-\d{2}/)
-  .refine((s) => !Number.isNaN(Date.parse(s)), { message: 'expected yyyy-MM-dd string' })
+  .refine((s) => !Number.isNaN(Date.parse(s)), { error: 'expected yyyy-MM-dd string' })
   .transform<Date>(s => new Date(Date.parse(s)))
 const nullishNonEmptyString = z.string().trim().transform<string | undefined>(s => s ? s : undefined).nullish()
 
@@ -52,7 +51,7 @@ const cycle = z.object({
   eol: z.boolean().or(isoDate).nullish(), // end of life date for this release cycle or false
   latest: nullishNonEmptyString, // latest release in this cycle
   latestReleaseDate: isoDate.nullish(), // date of the latest release in this cycle
-  link: z.string().url().nullish(), // link to changelog for the latest release
+  link: z.url().nullish(), // link to changelog for the latest release
   support: z.boolean().or(isoDate).nullish(), // whether this release cycle has active support (true); or a date when support has ended
   // TODO extendedSupport
   discontinued: z.boolean().or(isoDate).nullish(), // whether this cycle is now discontinued (true); or a date when product was discontinued

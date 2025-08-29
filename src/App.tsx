@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, useRouteError } from 'react-router'
 import { AllProductsDashboard, Dashboard } from './Dashboard.tsx'
 import { EndOfProductLife } from './EndOfProductLife.tsx'
 

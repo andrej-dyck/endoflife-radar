@@ -11,7 +11,7 @@
     "jsx": "react-jsx",
 
     /* Libs */
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "types": ["vite/client"]
   },
   "include": ["./src", "./src/locale/*.json", "./*.d.ts", "./*.config.ts"]

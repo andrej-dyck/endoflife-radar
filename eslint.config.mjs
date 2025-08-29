@@ -7,7 +7,7 @@ import globals from 'globals'
 
 import eslintReact from 'eslint-plugin-react'
 import eslintReactHooks from 'eslint-plugin-react-hooks'
-import eslintTailwindcss from 'eslint-plugin-tailwindcss'
+// import eslintTailwindcss from 'eslint-plugin-tailwindcss'
 
 export default tsEslint.config(
   {
@@ -54,9 +54,6 @@ export default tsEslint.config(
       '@typescript-eslint/no-unused-vars': 'off', // enforced by tsconfig
       '@typescript-eslint/prefer-readonly': ['warn'],
       '@typescript-eslint/switch-exhaustiveness-check': ['warn'],
-
-      /* tailwind */
-      // 'tailwindcss/no-custom-classname': 'off'
     },
   },
   {
@@ -68,7 +65,7 @@ export default tsEslint.config(
     plugins: {
       'react': eslintReact,
       'react-hooks': eslintReactHooks,
-      'tailwindcss': eslintTailwindcss,
+      // 'tailwindcss': eslintTailwindcss,
     },
     settings: {
       'react': {
@@ -88,7 +85,9 @@ export default tsEslint.config(
       ...eslintReactHooks.configs.recommended.rules,
       'react/react-in-jsx-scope': 0,
       'react/jsx-uses-react': 0,
-      ...eslintTailwindcss.configs.recommended.rules,
+      'react/display-name': 0,
+      // ...eslintTailwindcss.configs.recommended.rules,
+      // 'tailwindcss/no-custom-classname': 0,
     },
   }
 )

@@ -2,8 +2,8 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "target": "ES2023",
-    "outDir": "./dist",
+    "target": "ES2024",
+    "outDir": "${configDir}/dist",
 
     /* Base Options */
     "allowImportingTsExtensions": true,
@@ -15,22 +15,25 @@
     "moduleDetection": "force",
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
 
     /* Strictness */
     "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "erasableSyntaxOnly": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUncheckedIndexedAccess": true,
+    "noUncheckedSideEffectImports": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strictFunctionTypes": true,
-    "strictNullChecks": true,
 
     /* Libs */
-    "lib": ["ES2023"],
+    "lib": ["ES2024"],
     "types": ["node"],
   }
 }

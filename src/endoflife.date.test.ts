@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { CycleState, cycleState, endOfLifeDate } from './endoflife.date.ts'
+import { type CycleState, cycleState, endOfLifeDate } from './endoflife.date.ts'
 
 import en from './locale/en.json' assert { type: 'json ' }
 
@@ -23,13 +23,7 @@ describe('endoflife.data', () => {
         })]),
       })
     }
-  })
-
-  test('product cycles have an href to endoflife.date', async () => {
-    await expect(eol.product({ productId: 'alpine' })).resolves.toMatchObject({
-      href: 'https://endoflife.date/alpine',
-    })
-  })
+  }, 10_000)
 
   test('all products have a translation', async () => {
     const { products } = await eol.allProducts()
@@ -40,6 +34,12 @@ describe('endoflife.data', () => {
     ).toEqual(
       productIds.sort()
     )
+  }, 10_000)
+
+  test('product cycles have an href to endoflife.date', async () => {
+    await expect(eol.product({ productId: 'alpine' })).resolves.toMatchObject({
+      href: 'https://endoflife.date/alpine',
+    })
   })
 })
 

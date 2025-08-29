@@ -1,7 +1,7 @@
-import React, { SVGProps } from 'react'
+import { withSvgProps } from './withSvgProps.tsx'
 
 /** svg-spinners:bars-scale-fade */
-export const SpinnerBars = React.memo((props: SVGProps<SVGSVGElement>) =>
+export const SpinnerBars = withSvgProps((props) =>
   <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" aria-hidden="true" viewBox="0 0 24 24" {...props}>
     <rect width="6" height="14" x="1" y="4" fill="currentColor">
       <animate id="svgSpinnersBarsScaleFade0" fill="freeze" attributeName="y"

@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss" important;
+@source "./";
+
+@theme static {
+  --color-body-bg: var(--color-gray-800);
+  --color-body-text: var(--color-blue-50);
+  --color-h-text: var(--color-blue-100);
+  --color-placeholder-text: var(--color-slate-400);
+  --color-primary-element: var(--color-sky-700);
+  --color-focus: var(--color-sky-700);
+  --color-element-bg: var(--color-gray-700);
+  --color-element-border: var(--color-gray-500);
+  --color-highlight-bg: var(--color-slate-500);
+}
 
 @layer base {
   :root {
@@ -39,4 +50,8 @@
   *:before{
     box-sizing: border-box;
   }
+}
+
+@utility container {
+  margin-inline: auto;
 }
