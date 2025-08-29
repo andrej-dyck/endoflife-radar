@@ -10,13 +10,13 @@ import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 export const ProductSearch = ({ onSelect }: {
   onSelect?: (product: Product) => void
 }) => {
-  const [searchInput, setSearchInput] = useState<string>('')
-  const { products, isLoading } = useFilteredProductList(searchInput)
+  const [query, setQuery] = useState<string>('')
+  const { products, isLoading } = useFilteredProductList(query)
 
   const focus = useRef({ searchBox: false, resultList: false })
   const [refocused, setRefocused] = useState<boolean>(false)
 
-  const showResults = useMemo(() => searchInput && (focus.current.searchBox || focus.current.resultList), [searchInput, focus, refocused])
+  const showResults = useMemo(() => query && (focus.current.searchBox || focus.current.resultList), [query, focus, refocused])
 
   const { t } = useTranslation('ui')
 
@@ -24,7 +24,7 @@ export const ProductSearch = ({ onSelect }: {
     <SearchBox
       label={t('product-search.label')}
       placeholder={t('product-search.placeholder')}
-      onChange={setSearchInput}
+      onChange={setQuery}
       onFocusChange={(hasFocus) => {
         focus.current.searchBox = hasFocus
         setRefocused(f => !f)
@@ -32,6 +32,7 @@ export const ProductSearch = ({ onSelect }: {
       hotkey="ctrl+k"
     />
     {showResults && <SearchResults
+      query={query}
       products={products}
       isLoading={isLoading}
       onSelect={(p) => {
@@ -47,7 +48,8 @@ export const ProductSearch = ({ onSelect }: {
   </div>
 }
 
-const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
+const SearchResults = ({ query, products, isLoading, onSelect, onFocusChange }: {
+  query: string,
   products?: readonly LocalizedProduct[]
   isLoading?: boolean
   onSelect?: (product: Product) => void
@@ -66,15 +68,15 @@ const SearchResults = ({ products, isLoading, onSelect, onFocusChange }: {
     >
       {isLoading
         ? <li><SpinnerBars /></li>
-        : products?.map(p => (
-          <li key={p.productId}>
+        : products?.length === 0
+          ? <span>No results for <strong>"{query}"</strong></span>
+          : products?.map(p => <li key={p.productId}>
             <FocusableButton
               className="my-1 w-full content-center rounded p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
               hasFocus={p.productId === focusedResult?.productId}
               onClick={() => onSelect?.(p)}
             >{p.name}</FocusableButton>
-          </li>
-        ))}
+          </li>)}
     </ul>
   </div>
 }
