@@ -1,21 +1,19 @@
 import { describe, expect, test } from 'vitest'
-import { type CycleState, cycleState, apiEndoflifeDate } from './apiEndoflifeDate.ts'
+import { apiEndoflifeDate, type CycleState, cycleState } from './apiEndoflifeDate.ts'
 
 import en from './locale/en.json' assert { type: 'json ' }
 
-describe('endoflife.data', () => {
+describe('api client endoflife.date', () => {
   const eol = apiEndoflifeDate()
 
-  test('all product cycles can be parsed', async () => {
+  test.skipIf(import.meta.env.MODE === 'CI')('all product cycles can be parsed', async () => {
     const { products } = await eol.allProducts()
 
     const details = products.map(p => eol.product(p))
     expect.assertions(details.length)
 
-    // fs.writeFile('./dist/all-products.json', JSON.stringify(await Promise.all(details)), { encoding: 'utf8' }, console.error)
-
-    for (const detailPromise of details) {
-      await expect.soft(detailPromise).resolves.toMatchObject({
+    for (const productDetails of await Promise.all(details)) {
+      expect.soft(productDetails).toMatchObject({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         cycles: expect.arrayContaining([expect.objectContaining({
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -23,9 +21,9 @@ describe('endoflife.data', () => {
         })]),
       })
     }
-  }, 10_000)
+  })
 
-  test('all products have a translation', async () => {
+  test.skipIf(import.meta.env.MODE === 'CI')('all products have a translation', async () => {
     const { products } = await eol.allProducts()
     const productIds = products.map(p => p.productId)
 
@@ -34,16 +32,17 @@ describe('endoflife.data', () => {
     ).toEqual(
       productIds.sort()
     )
-  }, 10_000)
+  })
 
-  test('product cycles have an href to endoflife.date', async () => {
+  test.skipIf(import.meta.env.MODE === 'CI')('product cycles have an href to endoflife.date', async () => {
     await expect(eol.product({ productId: 'alpine' })).resolves.toMatchObject({
+      productId: 'alpine',
       href: 'https://endoflife.date/alpine',
     })
   })
 })
 
-describe('cycle-state', () => {
+describe('api cycle-state', () => {
   const now = new Date('2024-03-15T13:08:32Z')
   const futureDate = new Date('2024-10-01')
   const furtherFutureDate = new Date('2025-01-01')

@@ -3,11 +3,12 @@ import { z } from 'zod/mini'
 
 export type Products = z.infer<typeof products>
 export type Product = Products[number]
+export type ProductDetails = Product & { readonly cycles: Cycles, readonly href: string }
 export type Cycles = z.infer<typeof cycles>
 export type Cycle = z.infer<typeof cycle>
 
 export const apiEndoflifeDate = (
-  fetchJson: (url: string | URL) => Promise<unknown> = (url) => fetch(url).then(res => res.json() as unknown)
+  fetchJson: (url: string | URL) => Promise<unknown> = (url) => fetch(url, { keepalive: true }).then(res => res.json() as unknown)
 ) => {
   const eolApiUrl = 'https://endoflife.date/api'
   const eolUrl = 'https://endoflife.date'
@@ -16,9 +17,10 @@ export const apiEndoflifeDate = (
     allProducts: (): Promise<{ readonly products: Products }> =>
       fetchJson(`${eolApiUrl}/all.json`)
         .then(response => ({ products: parseWith(products)(response) })),
-    product: ({ productId }: Product): Promise<{ readonly cycles: Cycles, readonly href: string }> =>
+
+    product: ({ productId }: Product): Promise<ProductDetails> =>
       fetchJson(`${eolApiUrl}/${productId}.json`)
-        .then(response => ({ cycles: parseWith(cycles)(response), href: `${eolUrl}/${productId}` })),
+        .then(response => ({ productId, cycles: parseWith(cycles)(response), href: `${eolUrl}/${productId}` })),
   }
 }
 
