@@ -4,7 +4,8 @@ import useSWRImmutable from 'swr/immutable'
 import { z } from 'zod/mini'
 import { apiEndoflifeDate, type Cycles, cycleState, type Product } from './apiEndoflifeDate.ts'
 import { useParsedParams } from './state/useParsedParams.ts'
-import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
+import { BackButton } from './ui-components/BackButton.tsx'
+import { ExternalLink, ExternalLinkIcon } from './ui-components/ExternalLink.tsx'
 import { ScreenTitle } from './ui-components/ScreenTitle.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
@@ -16,12 +17,15 @@ export const EndOfProductLife = () => {
   const systemTime = useMemo(() => new Date(Date.now()), [cycles])
 
   return <>
-    <header className="container p-2 pt-8">
-      <ScreenTitle text={name} />
+    <div className="container p-2 pt-8">
+      <BackButton />
+    </div>
+    <header className="container p-2 pt-4 flex flex-row flex-wrap items-center justify-between gap-2">
+      <ScreenTitle text={name} noAppLink />
+      {href && <ExternalLink href={href} className="flex items-center gap-1.5" >{href} <ExternalLinkIcon /></ExternalLink>}
     </header>
-    <main className="container px-2 pb-4">
+    <main className="container px-2 pb-4 flex flex-col gap-2">
       {isLoading ? <SpinnerBars /> : <>
-        {href && <p className="mb-2"><LinkNewTab href={href} text={href} /></p>}
         {cycles && <ProductCycles cycles={cycles} systemTime={systemTime} />}
       </>}
     </main>
@@ -31,7 +35,7 @@ export const EndOfProductLife = () => {
 const ProductCycles = ({ cycles, systemTime }: { cycles: Cycles, systemTime: Date }) => {
   return <>
     {cycles.map((c) => <div key={c.cycle}
-      className="grid grid-cols-2 rounded-xl border border-element-border bg-element-bg px-3 py-2 my-2"
+      className="grid grid-cols-2 rounded-xl border border-element-border bg-element-bg px-3 py-2"
     >
       <pre>{JSON.stringify(cycleState(c)(systemTime), null, 2)}</pre>
       <pre>{JSON.stringify(c, null, 2)}</pre>

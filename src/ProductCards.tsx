@@ -10,7 +10,8 @@ import {
   type Products
 } from './apiEndoflifeDate.ts'
 import { daysInMs, useProductEolInfo } from './EndOfProductLife.tsx'
-import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
+import { IconButton } from './ui-components/IconButton.tsx'
+import { ExternalLink, ExternalLinkIcon } from './ui-components/ExternalLink.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 import { cns } from './ui-components/twMerge.tsx'
 import { withSvgProps } from './ui-components/withSvgProps.tsx'
@@ -31,24 +32,20 @@ const ProductCard = ({ product, onRemove }: {
   const { name, cycles, href, isLoading } = useProductEolInfo(product, { refreshIntervalInMs: daysInMs(1) })
   const systemTime = useMemo(() => new Date(Date.now()), [cycles])
 
-  const iconClass = 'size-6 rounded-full transition-all p-1 hover:ring hover:ring-focus focus:ring focus:ring-focus'
-
   return <div
     className="flex h-52 flex-col overflow-hidden rounded-xl border border-element-border bg-element-bg px-3 py-2"
   >
     {isLoading ? <SpinnerBars /> : (<>
       <div className="flex place-content-between items-baseline">
         <h2 className="line-clamp-1">{name}</h2>
-        {onRemove &&
-          <button onClick={() => onRemove(product)} className="cursor-pointer"><RemoveIcon className={iconClass} />
-          </button>}
+        {onRemove && <IconButton onClick={() => onRemove(product)} icon={<RemoveIcon />} />}
       </div>
       <div className="grow">
         {cycles && <ProductCycles cycles={cycles} systemTime={systemTime} />}
       </div>
       <div className="flex justify-end gap-1">
-        <Link to={`/eol/${product.productId}`}><ProductDataIcon className={iconClass} /></Link>
-        {href && <LinkNewTab href={href} iconClass={iconClass} />}
+        <Link to={`/eol/${product.productId}`}><IconButton icon={<ProductDataIcon />} /></Link>
+        {href && <ExternalLink href={href} ><IconButton icon={<ExternalLinkIcon />} /></ExternalLink>}
       </div>
     </>)}
   </div>
