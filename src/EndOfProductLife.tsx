@@ -11,7 +11,7 @@ export const EndOfProductLife = () => {
   const product = useParsedParams(
     z.object({ productId: z.string().check(z.minLength(1)) })
   )
-  const { name, href, cycles, isLoading } = useProductEolInfo(product)
+  const { name, href, cycles, isLoading } = useProductEolInfo(product, { refreshIntervalInMs: daysInMs(1) })
 
   return <>
     <header className="container p-2 pt-8">
@@ -26,10 +26,16 @@ export const EndOfProductLife = () => {
   </>
 }
 
-export const useProductEolInfo = ({ productId }: Product) => {
-  const { data, isLoading } = useSWRImmutable({ key: 'product-eol', productId }, apiEndoflifeDate().product)
+export const useProductEolInfo = ({ productId }: Product, options?: { refreshIntervalInMs?: number }) => {
+  const { data, isLoading } = useSWRImmutable(
+    { key: 'product-eol', productId },
+    apiEndoflifeDate().product,
+    { refreshInterval: options?.refreshIntervalInMs }
+  )
 
   const { t } = useTranslation(['products'])
 
   return { name: t(productId), cycles: data?.cycles, href: data?.href, isLoading }
 }
+
+export const daysInMs = (days: number) => days * 24 * 60 * 60 * 1000

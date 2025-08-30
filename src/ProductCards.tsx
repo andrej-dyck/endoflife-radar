@@ -9,7 +9,7 @@ import {
   type Product,
   type Products
 } from './apiEndoflifeDate.ts'
-import { useProductEolInfo } from './EndOfProductLife.tsx'
+import { daysInMs, useProductEolInfo } from './EndOfProductLife.tsx'
 import { LinkNewTab } from './ui-components/LinkNewTab.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 import { cns } from './ui-components/twMerge.tsx'
@@ -28,8 +28,8 @@ const ProductCard = ({ product, onRemove }: {
   product: Product,
   onRemove?: (p: Product) => void,
 }) => {
-  const { name, cycles, href, isLoading } = useProductEolInfo(product)
-  const systemTime = useMemo(() => new Date(Date.now()), [])
+  const { name, cycles, href, isLoading } = useProductEolInfo(product, { refreshIntervalInMs: daysInMs(1) })
+  const systemTime = useMemo(() => new Date(Date.now()), [cycles])
 
   const iconClass = 'size-6 rounded-full transition-all p-1 hover:ring hover:ring-focus focus:ring focus:ring-focus'
 
@@ -39,7 +39,9 @@ const ProductCard = ({ product, onRemove }: {
     {isLoading ? <SpinnerBars /> : (<>
       <div className="flex place-content-between items-baseline">
         <h2 className="line-clamp-1">{name}</h2>
-        {onRemove && <button onClick={() => onRemove(product)} className="cursor-pointer"><RemoveIcon className={iconClass} /></button>}
+        {onRemove &&
+          <button onClick={() => onRemove(product)} className="cursor-pointer"><RemoveIcon className={iconClass} />
+          </button>}
       </div>
       <div className="grow">
         {cycles && <ProductCycles cycles={cycles} systemTime={systemTime} />}
@@ -52,10 +54,7 @@ const ProductCard = ({ product, onRemove }: {
   </div>
 }
 
-const ProductCycles = ({ cycles, systemTime }: {
-  cycles: Cycles,
-  systemTime: Date,
-}) =>
+const ProductCycles = ({ cycles, systemTime }: { cycles: Cycles, systemTime: Date }) =>
   <div className="flex h-full flex-col gap-2 p-2">
     {cycles
       .slice(0, 3)
