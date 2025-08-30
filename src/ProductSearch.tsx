@@ -22,6 +22,7 @@ export const ProductSearch = ({ onSelect }: {
 
   return <div role="search" className="w-1/3 min-w-60">
     <SearchBox
+      value={query}
       label={t('product-search.label')}
       placeholder={t('product-search.placeholder')}
       onChange={setQuery}
@@ -38,6 +39,7 @@ export const ProductSearch = ({ onSelect }: {
       onSelect={(p) => {
         onSelect?.(p)
         focus.current.resultList = false
+        setQuery('')
         setRefocused(f => !f)
       }}
       onFocusChange={(hasFocus) => {
