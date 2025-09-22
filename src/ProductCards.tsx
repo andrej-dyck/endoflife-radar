@@ -1,81 +1,69 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router'
 import { match } from 'ts-pattern'
-import {
-  type Cycle,
-  type Cycles,
-  cycleState,
-  type CycleState,
-  type Product,
-  type Products
-} from './apiEndoflifeDate.ts'
+import { type Product, type ProductRelease, supportState, type SupportState } from './apiEndoflifeDate.ts'
 import { daysInMs, useProductEolInfo } from './EndOfProductLife.tsx'
-import { IconButton } from './ui-components/IconButton.tsx'
 import { ExternalLink, ExternalLinkIcon } from './ui-components/ExternalLink.tsx'
+import { IconButton } from './ui-components/IconButton.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 import { cns } from './ui-components/twMerge.tsx'
 import { withSvgProps } from './ui-components/withSvgProps.tsx'
 
 export const ProductCards = ({ products, onRemove }: {
-  products: Products,
-  onRemove?: (p: Product) => void,
+  products: readonly Pick<Product, 'productId'>[],
+  onRemove?: (p: Pick<Product, 'productId'>) => void,
 }) =>
   <div
     className="grid grid-cols-1 place-content-center justify-items-stretch gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
     {products.map(p => <ProductCard key={p.productId} product={p} onRemove={onRemove} />)}
   </div>
 
-const ProductCard = ({ product, onRemove }: {
-  product: Product,
-  onRemove?: (p: Product) => void,
+const ProductCard = ({ product: { productId }, onRemove }: {
+  product: Pick<Product, 'productId'>,
+  onRemove?: (p: Pick<Product, 'productId'>) => void,
 }) => {
-  const { name, cycles, href, isLoading } = useProductEolInfo(product, { refreshIntervalInMs: daysInMs(1) })
-  const systemTime = useMemo(() => new Date(Date.now()), [cycles])
+  const { product, isLoading } = useProductEolInfo({ productId }, { refreshIntervalInMs: daysInMs(1) })
 
   return <div
     className="flex h-52 flex-col overflow-hidden rounded-xl border border-element-border bg-element-bg px-3 py-2"
   >
-    {isLoading ? <SpinnerBars /> : (<>
+    {isLoading ? <SpinnerBars /> : <>
       <div className="flex place-content-between items-baseline">
-        <h2 className="line-clamp-1">{name}</h2>
-        {onRemove && <IconButton onClick={() => onRemove(product)} icon={<RemoveIcon />} />}
+        <h2 className="line-clamp-1">{product?.label ?? productId}</h2>
+        {onRemove && <IconButton onClick={() => onRemove({ productId })} icon={<RemoveIcon />} />}
       </div>
       <div className="grow">
-        {cycles && <ProductCycles cycles={cycles} systemTime={systemTime} />}
+        {product?.releases && <ProductReleases releases={product.releases} />}
       </div>
       <div className="flex justify-end gap-1">
-        <Link to={`/eol/${product.productId}`}><IconButton icon={<ProductDataIcon />} /></Link>
-        {href && <ExternalLink href={href} ><IconButton icon={<ExternalLinkIcon />} /></ExternalLink>}
+        <Link to={`/eol/${productId}`}><IconButton icon={<ProductDataIcon />} /></Link>
+        {product?.links && <ExternalLink href={product.links.html}><IconButton icon={<ExternalLinkIcon />} /></ExternalLink>}
       </div>
-    </>)}
+    </>}
   </div>
 }
 
-const ProductCycles = ({ cycles, systemTime }: { cycles: Cycles, systemTime: Date }) =>
+const ProductReleases = ({ releases }: { releases: readonly ProductRelease[] }) =>
   <div className="flex h-full flex-col gap-2 p-2">
-    {cycles
+    {releases
       .slice(0, 3)
-      .map((c, i) => <ProductCycle key={c.cycle} cycle={c} isLatest={i === 0} systemTime={systemTime} />)
+      .map((r, i) => <ProductCycle key={r.name} release={r} isLatest={i === 0} />)
     }
   </div>
 
-const ProductCycle = ({ cycle, isLatest, systemTime }: {
-  cycle: Cycle,
-  isLatest?: boolean,
-  systemTime: Date,
-}) => {
-  const state = useMemo<CycleState>(() => cycleState(cycle)(systemTime), [cycle, systemTime])
+const ProductCycle = ({ release, isLatest }: { release: ProductRelease, isLatest?: boolean }) => {
+  const state = useMemo<SupportState>(() => supportState(release), [release])
 
   return <span className="inline-flex items-center gap-2">
-    <ProductCycleState state={state} />
+    <SupportState state={state} />
     <h3 className={cns('line-clamp-1 inline-flex items-center gap-2', !isLatest && 'text-sm font-light')}>
-      {cycle.latest ?? cycle.cycle}
-      {cycle.codename && <i className="text-sm text-placeholder-text">'{cycle.codename}'</i>}
+      {release.latest?.name ?? release.name}
+      {release.codename && <i className="text-sm text-placeholder-text">'{release.codename}'</i>}
     </h3>
   </span>
 }
 
-const ProductCycleState = ({ state }: { state: CycleState }) =>
+const SupportState = ({ state }: { state: SupportState }) =>
   useMemo(
     () => match(state)
       .with({ state: 'active-support', isLts: true }, () => <StarCheckIcon className="text-amber-300" />)

@@ -14,5 +14,5 @@
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "types": ["vite/client"]
   },
-  "include": ["./src", "./src/locale/*.json", "./*.d.ts", "./*.config.ts"]
+  "include": ["./src", "./src/locale/*.json", "./src/test-data/*.json", "./*.d.ts", "./*.config.ts"]
 }
