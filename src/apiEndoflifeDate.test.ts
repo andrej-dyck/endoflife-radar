@@ -1,183 +1,185 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+
+import { match, P } from 'ts-pattern'
 import { describe, expect, test } from 'vitest'
-import { apiEndoflifeDate, type CycleState, cycleState } from './apiEndoflifeDate.ts'
+import { apiEndoflifeDate, type ProductRelease, type SupportState, supportState } from './apiEndoflifeDate.ts'
 
-describe('api client endoflife.date', () => {
-  const eol = apiEndoflifeDate()
+describe('api client endoflife.date', async () => {
+  const fullProductsSnapshot: { total: number, result: Record<string, unknown>[] } =
+    // snapshot from: https://endoflife.date/api/v1/products/full
+    await import('./test-data/eol-full-products.snapshot.json', { assert: { type: 'json' } })
 
-  test.skipIf(import.meta.env.MODE === 'CI')('all products can be parsed', async () => {
-    const { products } = await eol.allProducts()
+  test('all products can be parsed (snapshot)', async () => {
+    const eolClient = eolApiStub({
+      allProducts: () => Promise.resolve(fullProductsSnapshot),
+      productById: (productId) => {
+        const product = fullProductsSnapshot.result.find(r => r.name === productId)
+        return product ? Promise.resolve({ result: product }) : Promise.reject(new Error(`Product '${productId}' not found`))
+      },
+    })
 
-    const details = products.map(p => eol.productById(p))
-    expect.assertions(details.length)
+    const { products, total } = await eolClient.allProducts()
+    expect(products.length).toEqual(total)
+
+    const details = products.map(p => eolClient.productById(p))
+    expect.assertions(fullProductsSnapshot.total * 4 + 1)
 
     for (const productDetails of await Promise.all(details)) {
       expect.soft(productDetails).toMatchObject({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        cycles: expect.arrayContaining([expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          cycle: expect.stringMatching(/.+/),
-        })]),
+        productId: expect.stringMatching(/.+/),
       })
+
+      // assume that if releases are not maintained, that isEol is also false
+      expect.soft(
+        productDetails.releases.find(r => r.isMaintained === false && r.isEol === false)
+      ).toBeUndefined()
+
+      // assume that if releases are not maintained, that isEoas is also false
+      expect.soft(
+        productDetails.releases.find(r => r.isMaintained === false && r.isEoas === false)
+      ).toBeUndefined()
+
+      // assume that if releases are not maintained, that isEoes is also false
+      expect.soft(
+        productDetails.releases.find(r => r.isMaintained === false && r.isEoes === false)
+      ).toBeUndefined()
     }
   })
 
-  test.skipIf(import.meta.env.MODE === 'CI')('product cycles have an href to endoflife.date', async () => {
-    await expect(eol.productById({ productId: 'alpine' })).resolves.toMatchObject({
-      productId: 'alpine',
-      href: 'https://endoflife.date/alpine',
-    })
+  test.skipIf(import.meta.env.MODE === 'CI')('all products can be parsed', async () => {
+    const eolClient = apiEndoflifeDate()
+
+    const { products, total } = await eolClient.allProducts()
+    expect(products.length).toEqual(total)
+    expect(fullProductsSnapshot.total).toEqual(total)
+
+    const details = products.map(p => eolClient.productById(p))
+    expect.assertions(total + 2)
+
+    for (const productDetails of await Promise.all(details)) {
+      expect.soft(productDetails).toMatchObject({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        productId: expect.stringMatching(/.+/),
+      })
+    }
   })
 })
 
-describe('api cycle-state', () => {
-  const now = new Date('2024-03-15T13:08:32Z')
+describe('api support state', () => {
   const futureDate = new Date('2024-10-01')
   const furtherFutureDate = new Date('2025-01-01')
   const earlierDate = new Date('2024-01-01')
   const evenEarlierDate = new Date('2023-09-18')
 
-  test.each([
+  test.each(typed<{ release: ProductRelease, expectedState: SupportState }>(
     {
-      cycle: { cycle: '1', eol: false },
-      expectedState: { state: 'active-support' } satisfies CycleState,
+      release: { name: '1', isMaintained: true, isEol: false },
+      expectedState: { state: 'active-support' },
     },
     {
-      cycle: { cycle: '2', eol: false, support: true },
-      expectedState: { state: 'active-support' } satisfies CycleState,
+      release: { name: '2', isMaintained: true, isEol: false, isEoas: false },
+      expectedState: { state: 'active-support' },
     },
     {
-      cycle: { cycle: '3', eol: futureDate },
-      expectedState: { state: 'active-support', endDate: futureDate } satisfies CycleState,
+      release: { name: '3', isMaintained: true, isEol: false, eolFrom: futureDate },
+      expectedState: { state: 'active-support', supportEndDate: futureDate },
     },
     {
-      cycle: { cycle: '4', eol: futureDate, support: true },
-      expectedState: { state: 'active-support', endDate: futureDate } satisfies CycleState,
+      release: { name: '4', isMaintained: true, isEol: false, eoasFrom: futureDate },
+      expectedState: { state: 'active-support', supportEndDate: futureDate },
     },
     {
-      cycle: { cycle: '5', eol: furtherFutureDate, support: futureDate },
-      expectedState: {
-        state: 'active-support',
-        endDate: futureDate,
-        securityEndDate: furtherFutureDate,
-      } satisfies CycleState,
-    },
-  ])('active-support; %j', ({ cycle, expectedState }) => {
-    expect(cycleState(cycle)(now)).toMatchObject(expectedState)
+      release: { name: '5', isMaintained: true, isEol: false, eoesFrom: furtherFutureDate },
+      expectedState: { state: 'active-support', securityEndDate: furtherFutureDate },
+    }
+  ))('active-support; %j', ({ release, expectedState }) => {
+    expect(supportState(release)).toMatchObject(expectedState)
   })
 
-  test.each([
+  test.each(typed<{ release: ProductRelease, expectedState: SupportState }>(
     {
-      cycle: { cycle: '1', eol: false, support: false },
-      expectedState: { state: 'extended-support' } satisfies CycleState,
+      release: { name: '1', isMaintained: true, isEol: true, isEoes: false },
+      expectedState: { state: 'extended-support' },
     },
     {
-      cycle: { cycle: '2', eol: false, support: earlierDate },
-      expectedState: { state: 'extended-support', endDate: earlierDate } satisfies CycleState,
+      release: { name: '2', isMaintained: true, isEol: true, eolFrom: earlierDate, isEoes: false },
+      expectedState: { state: 'extended-support', supportEndDate: earlierDate },
     },
     {
-      cycle: { cycle: '3', eol: futureDate, support: false },
-      expectedState: { state: 'extended-support', endDate: futureDate } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '4', eol: futureDate, support: earlierDate },
-      expectedState: { state: 'extended-support', endDate: futureDate } satisfies CycleState,
-    },
-  ])('extended-support; %j', ({ cycle, expectedState }) => {
-    expect(cycleState(cycle)(now)).toMatchObject(expectedState)
+      release: { name: '3', isMaintained: true, isEol: true, isEoes: false, eoesFrom: furtherFutureDate },
+      expectedState: { state: 'extended-support', securityEndDate: furtherFutureDate },
+    }
+  ))('extended-support; %j', ({ release, expectedState }) => {
+    expect(supportState(release)).toMatchObject(expectedState)
   })
 
-  test.each([
+  test.each(typed<{ release: ProductRelease, expectedState: SupportState }>(
     {
-      cycle: { cycle: '1', eol: false, lts: true },
-      expectedState: { state: 'active-support', isLts: true } satisfies CycleState,
+      release: { name: '1', isMaintained: true, isEol: false, isLts: true },
+      expectedState: { state: 'active-support', isLts: true },
     },
     {
-      cycle: { cycle: '2', eol: false, lts: false },
-      expectedState: { state: 'active-support', isLts: false } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '3', eol: false },
-      expectedState: { state: 'active-support', isLts: undefined } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '4', eol: furtherFutureDate, lts: futureDate },
-      expectedState: { state: 'active-support', isLts: false } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '5', eol: futureDate, lts: earlierDate },
-      expectedState: { state: 'active-support', isLts: true } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '6', eol: false, support: false, lts: true },
-      expectedState: { state: 'extended-support', isLts: true } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '7', eol: false, support: false, lts: false },
-      expectedState: { state: 'extended-support', isLts: false } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '8', eol: false, support: false },
-      expectedState: { state: 'extended-support', isLts: undefined } satisfies CycleState,
-    },
-  ])('is LTS; %j', ({ cycle, expectedState }) => {
-    expect(cycleState(cycle)(now)).toMatchObject(expectedState)
+      release: { name: '1', isMaintained: true, isEol: true, isEoes: false, isLts: true },
+      expectedState: { state: 'extended-support', isLts: true },
+    }
+  ))('is LTS; %j', ({ release, expectedState }) => {
+    expect(supportState(release)).toMatchObject(expectedState)
   })
 
-  test.each([
+  test.each(typed<{ release: ProductRelease, expectedState: SupportState }>(
     {
-      cycle: { cycle: '1', eol: false, discontinued: true },
-      expectedState: { state: 'discontinued' } satisfies CycleState,
+      release: { name: '1', isMaintained: false, isEol: true, isDiscontinued: true },
+      expectedState: { state: 'discontinued' },
     },
     {
-      cycle: { cycle: '2', eol: false, discontinued: earlierDate },
-      expectedState: { state: 'discontinued', onDate: earlierDate } satisfies CycleState,
+      release: { name: '2', isMaintained: true, isEol: false, isDiscontinued: true },
+      expectedState: { state: 'discontinued' },
     },
     {
-      cycle: { cycle: '3', eol: futureDate, discontinued: true },
-      expectedState: { state: 'discontinued', supportEndDate: futureDate } satisfies CycleState,
+      release: { name: '3', isMaintained: true, isEol: true, eolFrom: futureDate, isDiscontinued: true },
+      expectedState: { state: 'discontinued', supportEndDate: futureDate },
     },
     {
-      cycle: { cycle: '4', eol: futureDate, discontinued: earlierDate },
-      expectedState: { state: 'discontinued', onDate: earlierDate, supportEndDate: futureDate } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '4', eol: futureDate, discontinued: now },
-      expectedState: { state: 'discontinued', onDate: now, supportEndDate: futureDate } satisfies CycleState,
-    },
-  ])('discontinued; %j', ({ cycle, expectedState }) => {
-    expect(cycleState(cycle)(now)).toEqual(expectedState)
+      release: { name: '4', isMaintained: true, isEol: true, eoesFrom: furtherFutureDate, isDiscontinued: true },
+      expectedState: { state: 'discontinued', securityEndDate: furtherFutureDate },
+    }
+  ))('discontinued; %j', ({ release, expectedState }) => {
+    expect(supportState(release)).toEqual(expectedState)
   })
 
-  test.each([
+  test.each(typed<{ release: ProductRelease, expectedState: SupportState }>(
     {
-      cycle: { cycle: '1', eol: true },
-      expectedState: { state: 'unsupported' } satisfies CycleState,
+      release: { name: '1', isMaintained: false, isEol: true },
+      expectedState: { state: 'unsupported' },
     },
     {
-      cycle: { cycle: '2', eol: true, support: false },
-      expectedState: { state: 'unsupported' } satisfies CycleState,
+      release: { name: '2', isMaintained: false, isEol: true, eolFrom: earlierDate },
+      expectedState: { state: 'unsupported', supportEndDate: earlierDate },
     },
     {
-      cycle: { cycle: '3', eol: true, support: earlierDate },
-      expectedState: { state: 'unsupported', supportEndDate: earlierDate } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '4', eol: true, discontinued: true },
-      expectedState: { state: 'unsupported' } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '5', eol: true, discontinued: earlierDate },
-      expectedState: { state: 'unsupported' } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '6', eol: new Date('2024-01-01') },
-      expectedState: { state: 'unsupported', supportEndDate: earlierDate } satisfies CycleState,
-    },
-    {
-      cycle: { cycle: '6', eol: earlierDate, support: evenEarlierDate },
-      expectedState: { state: 'unsupported', supportEndDate: earlierDate } satisfies CycleState,
-    },
-  ])('unsupported; %j', ({ cycle, expectedState }) => {
-    expect(cycleState(cycle)(now)).toEqual(expectedState)
+      release: { name: '3', isMaintained: false, isEol: true, eolFrom: evenEarlierDate, eoasFrom: earlierDate },
+      expectedState: { state: 'unsupported', supportEndDate: earlierDate },
+    }
+  ))('unsupported; %j', ({ release, expectedState }) => {
+    expect(supportState(release)).toEqual(expectedState)
   })
 })
+
+const eolApiStub = ({ allProducts, productById }: {
+  allProducts: () => Promise<unknown>,
+  productById: (productId: string) => Promise<unknown>
+}) =>
+  apiEndoflifeDate(
+    (url: string | URL) => match(url.toString())
+      .returnType<Promise<unknown>>()
+      .with('https://endoflife.date/api/v1/products', () => allProducts())
+      .with(P.string.regex(/^https:\/\/endoflife\.date\/api\/v1\/products\/(.+)$/), (url) => productById(extractProductIdFromUrl(url) ?? ''))
+      .otherwise(() => Promise.reject(new Error(`Unexpected URL: ${url}`)))
+  )
+
+const extractProductIdFromUrl = (url: string) =>
+  new URL(url).pathname.split('/').pop()
+
+const typed = <T>(...args: readonly T[]) =>
+  args

@@ -10,10 +10,10 @@ import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 export const Dashboard = () => {
   const [productIds, setProductIds] = useUrlState('products', pStrings())
 
-  const withProduct = (p: Product) =>
+  const withProduct = (p: Pick<Product, 'productId'>) =>
     setProductIds((ps) => ps.some(productId => productId === p.productId) ? ps : [...ps, p.productId])
 
-  const withoutProduct = (p: Product) =>
+  const withoutProduct = (p: Pick<Product, 'productId'>) =>
     setProductIds((ps) => ps.filter(productId => productId !== p.productId))
 
   const { t } = useTranslation('ui')

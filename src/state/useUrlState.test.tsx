@@ -1,10 +1,10 @@
 /** @vitest-environment jsdom */
 
-import { describe, expect, it } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
-import { type Transformation, useUrlState } from './useUrlState.ts'
-import { MemoryRouter, useSearchParams } from 'react-router'
 import React from 'react'
+import { MemoryRouter, useSearchParams } from 'react-router'
+import { describe, expect, it } from 'vitest'
+import { type Transformation, useUrlState } from './useUrlState.ts'
 
 describe('useUrlState', () => {
 

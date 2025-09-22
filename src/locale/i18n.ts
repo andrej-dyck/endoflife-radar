@@ -5,7 +5,7 @@ import en from './en.json' assert { type: 'json ' }
 void i18n
   .use(initReactI18next)
   .init({
-    ns: [ 'ui', 'products' ],
+    ns: [ 'ui' ],
     resources: { en },
     fallbackLng: 'en',
     defaultNS: 'ui',
