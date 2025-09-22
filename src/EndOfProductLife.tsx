@@ -22,7 +22,8 @@ export const EndOfProductLife = () => {
     </div>
     <header className="container p-2 pt-4 flex flex-row flex-wrap items-center justify-between gap-2">
       <ScreenTitle text={name} noAppLink />
-      {href && <ExternalLink href={href} className="flex items-center gap-1.5" >{href} <ExternalLinkIcon /></ExternalLink>}
+      {href &&
+        <ExternalLink href={href} className="flex items-center gap-1.5">{href} <ExternalLinkIcon /></ExternalLink>}
     </header>
     <main className="container px-2 pb-4 flex flex-col gap-2">
       {isLoading ? <SpinnerBars /> : <>
@@ -43,10 +44,13 @@ const ProductCycles = ({ cycles, systemTime }: { cycles: Cycles, systemTime: Dat
   </>
 }
 
-export const useProductEolInfo = ({ productId }: Product, options?: { refreshIntervalInMs?: number }) => {
+export const useProductEolInfo = (
+  { productId }: Pick<Product, 'productId'>,
+  options?: { refreshIntervalInMs?: number }
+) => {
   const { data, isLoading } = useSWRImmutable(
     { key: 'product-eol', productId },
-    apiEndoflifeDate().product,
+    apiEndoflifeDate().productById,
     { refreshInterval: options?.refreshIntervalInMs }
   )
 

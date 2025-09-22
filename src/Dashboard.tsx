@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type Product } from './apiEndoflifeDate.ts'
 import { ProductCards } from './ProductCards.tsx'
@@ -31,12 +32,18 @@ export const AllProductsDashboard = () => {
   const { products, isLoading } = useProductList()
 
   const { t } = useTranslation('ui')
+
+  const sortedProducts = useMemo<readonly Product[] | undefined>(
+    () => products?.toSorted((a, b) => a.label.localeCompare(b.label)),
+    [products]
+  )
+
   return <>
     <header className="container p-2 pt-8">
       <ScreenTitle text={t('title')} />
     </header>
     <main className="container pb-4">
-      {isLoading ? <SpinnerBars /> : products && <ProductCards products={[...products]} />}
+      {isLoading ? <SpinnerBars /> : sortedProducts && <ProductCards products={sortedProducts} />}
     </main>
   </>
 }

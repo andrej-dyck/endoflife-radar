@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import useSWRImmutable from 'swr/immutable'
-import { apiEndoflifeDate, type Product } from './apiEndoflifeDate.ts'
+import { apiEndoflifeDate, type Product, type Products } from './apiEndoflifeDate.ts'
 import { SearchBox } from './ui-components/SearchBox.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
 
@@ -52,7 +52,7 @@ export const ProductSearch = ({ onSelect }: {
 
 const SearchResults = ({ query, products, isLoading, onSelect, onFocusChange }: {
   query: string,
-  products?: readonly LocalizedProduct[]
+  products?: Products
   isLoading?: boolean
   onSelect?: (product: Product) => void
   onFocusChange?: (hasFocus: boolean) => void
@@ -77,7 +77,7 @@ const SearchResults = ({ query, products, isLoading, onSelect, onFocusChange }: 
               className="my-1 w-full content-center rounded p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
               hasFocus={p.productId === focusedResult?.productId}
               onClick={() => onSelect?.(p)}
-            >{p.name}</FocusableButton>
+            >{p.label}</FocusableButton>
           </li>)}
     </ul>
   </div>
@@ -105,7 +105,7 @@ const useFilteredProductList = (searchInput: string) => {
     () => products == null ? undefined :
       searchInput
         ? fuzzy
-          .filter(searchInput, products, { extract: p => p.name })
+          .filter(searchInput, Array.from(products), { extract: p => p.label })
           .map(r => r.original)
         : [],
     [products, searchInput]
@@ -114,24 +114,13 @@ const useFilteredProductList = (searchInput: string) => {
   return { products: filteredProducts, isLoading }
 }
 
-type LocalizedProduct = Product & { readonly name: string }
-
 export const useProductList = (args?: { load?: boolean }) => {
   const { data, isLoading } = useSWRImmutable(
     args?.load == null || args.load ? 'product-list' : null,
     apiEndoflifeDate().allProducts
   )
 
-  const { t } = useTranslation('products')
-
-  const products = useMemo(
-    () => data?.products
-      .map(p => ({ ...p, name: t(p.productId) } satisfies LocalizedProduct))
-      .toSorted(({ name: n1 }, { name: n2 }) => n1.localeCompare(n2)),
-    [data, t]
-  )
-
-  return { products, isLoading }
+  return { products: data?.products, total: data?.total, isLoading }
 }
 
 const useSearchResultsHotkeys = (products?: readonly Product[]) => {

@@ -1,15 +1,13 @@
 import { describe, expect, test } from 'vitest'
 import { apiEndoflifeDate, type CycleState, cycleState } from './apiEndoflifeDate.ts'
 
-import en from './locale/en.json' assert { type: 'json ' }
-
 describe('api client endoflife.date', () => {
   const eol = apiEndoflifeDate()
 
-  test.skipIf(import.meta.env.MODE === 'CI')('all product cycles can be parsed', async () => {
+  test.skipIf(import.meta.env.MODE === 'CI')('all products can be parsed', async () => {
     const { products } = await eol.allProducts()
 
-    const details = products.map(p => eol.product(p))
+    const details = products.map(p => eol.productById(p))
     expect.assertions(details.length)
 
     for (const productDetails of await Promise.all(details)) {
@@ -23,19 +21,8 @@ describe('api client endoflife.date', () => {
     }
   })
 
-  test.skipIf(import.meta.env.MODE === 'CI')('all products have a translation', async () => {
-    const { products } = await eol.allProducts()
-    const productIds = products.map(p => p.productId)
-
-    expect(
-      Object.keys(en.products).sort()
-    ).toEqual(
-      productIds.sort()
-    )
-  })
-
   test.skipIf(import.meta.env.MODE === 'CI')('product cycles have an href to endoflife.date', async () => {
-    await expect(eol.product({ productId: 'alpine' })).resolves.toMatchObject({
+    await expect(eol.productById({ productId: 'alpine' })).resolves.toMatchObject({
       productId: 'alpine',
       href: 'https://endoflife.date/alpine',
     })
