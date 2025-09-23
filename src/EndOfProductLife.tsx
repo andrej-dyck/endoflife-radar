@@ -3,9 +3,9 @@ import { z } from 'zod/mini'
 import { apiEndoflifeDate, type Product, type ProductRelease, supportState } from './apiEndoflifeDate.ts'
 import { useParsedParams } from './state/useParsedParams.ts'
 import { BackButton } from './ui-components/BackButton.tsx'
-import { ExternalLink, ExternalLinkIcon } from './ui-components/ExternalLink.tsx'
 import { ScreenTitle } from './ui-components/ScreenTitle.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
+import { ExternalLinkIcon, TextLink } from './ui-components/TextLink.tsx'
 
 export const EndOfProductLife = () => {
   const { productId } = useParsedParams(
@@ -20,9 +20,9 @@ export const EndOfProductLife = () => {
     <header className="container p-2 pt-4 flex flex-row flex-wrap items-center justify-between gap-2">
       <ScreenTitle text={product?.label ?? productId} noAppLink />
       {product?.links.html &&
-        <ExternalLink href={product.links.html} className="flex items-center gap-1.5">
+        <TextLink href={product.links.html} external className="flex items-center gap-1.5">
           {product.links.html} <ExternalLinkIcon />
-        </ExternalLink>
+        </TextLink>
       }
     </header>
     <main className="container px-2 pb-4 flex flex-col gap-2">

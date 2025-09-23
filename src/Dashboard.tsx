@@ -6,6 +6,7 @@ import { ProductSearch, useProductList } from './ProductSearch.tsx'
 import { pStrings, useUrlState } from './state/useUrlState.ts'
 import { ScreenTitle } from './ui-components/ScreenTitle.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
+import { TextLink } from './ui-components/TextLink.tsx'
 
 export const Dashboard = () => {
   const [productIds, setProductIds] = useUrlState('products', pStrings())
@@ -18,9 +19,12 @@ export const Dashboard = () => {
 
   const { t } = useTranslation('ui')
   return <>
-    <header className="container flex flex-row flex-wrap items-start justify-between gap-2 p-2 pt-8">
+    <header className="container flex flex-row flex-wrap items-start gap-2 p-2 pt-8">
       <ScreenTitle text={t('title')} />
-      <ProductSearch onSelect={withProduct} />
+      <span className="flex flex-row flex-wrap grow items-baseline justify-end gap-4">
+        <TextLink to="/all">show all</TextLink>
+        <ProductSearch onSelect={withProduct} />
+      </span>
     </header>
     <main className="container pb-4">
       <ProductCards products={productIds.map(productId => ({ productId }))} onRemove={withoutProduct} />
