@@ -3,8 +3,9 @@
 
 @theme static {
   --color-body-bg: var(--color-gray-800);
-  --color-body-text: var(--color-blue-50);
+  --color-body-text: var(--color-slate-200);
   --color-h-text: var(--color-blue-100);
+  --color-a-text: var(--color-slate-200);
   --color-placeholder-text: var(--color-slate-400);
   --color-primary-element: var(--color-sky-700);
   --color-focus: var(--color-sky-700);

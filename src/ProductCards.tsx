@@ -3,9 +3,9 @@ import { Link } from 'react-router'
 import { match } from 'ts-pattern'
 import { type Product, type ProductRelease, supportState, type SupportState } from './apiEndoflifeDate.ts'
 import { daysInMs, useProductEolInfo } from './EndOfProductLife.tsx'
-import { ExternalLink, ExternalLinkIcon } from './ui-components/ExternalLink.tsx'
 import { IconButton } from './ui-components/IconButton.tsx'
 import { SpinnerBars } from './ui-components/SpinnerIcons.tsx'
+import { ExternalLinkIcon, TextLink } from './ui-components/TextLink.tsx'
 import { cns } from './ui-components/twMerge.tsx'
 import { withSvgProps } from './ui-components/withSvgProps.tsx'
 
@@ -37,7 +37,7 @@ const ProductCard = ({ product: { productId }, onRemove }: {
       </div>
       <div className="flex justify-end gap-1">
         <Link to={`/eol/${productId}`}><IconButton icon={<ProductDataIcon />} /></Link>
-        {product?.links && <ExternalLink href={product.links.html}><IconButton icon={<ExternalLinkIcon />} /></ExternalLink>}
+        {product?.links && <TextLink href={product.links.html} external><IconButton icon={<ExternalLinkIcon />} /></TextLink>}
       </div>
     </>}
   </div>
