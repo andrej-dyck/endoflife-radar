@@ -51,19 +51,19 @@ describe('api client endoflife.date', async () => {
     const eolClient = apiEndoflifeDate()
 
     const { products, total } = await eolClient.allProducts()
-    expect(products.length).toEqual(total)
-    expect(fullProductsSnapshot.total).toEqual(total)
+    expect(products.length, 'number of products in response').toEqual(total)
+    expect(fullProductsSnapshot.total, 'number of products in snapshot').toEqual(total)
 
-    const details = products.map(p => eolClient.productById(p))
-    expect.assertions(total + 2)
+    expect.assertions(2 + total)
 
-    for (const productDetails of await Promise.all(details)) {
+    for (const product of products) {
+      const productDetails = await eolClient.productById(product)
       expect.soft(productDetails).toMatchObject({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         productId: expect.stringMatching(/.+/),
       })
     }
-  })
+  }, 60_000)
 })
 
 describe('api support state', () => {
