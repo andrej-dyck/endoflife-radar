@@ -15,11 +15,16 @@ export const apiEndoflifeDate = (
   const eolApiUrl = 'https://endoflife.date/api/v1'
 
   return {
-    allProducts: (): Promise<z.infer<typeof products>> =>
-      fetchJson(`${eolApiUrl}/products`).then(parseWith(products)),
+    allProducts: (): Promise<z.infer<typeof products>> => withRetry(
+      () => fetchJson(`${eolApiUrl}/products`)
+        .then(parseWith(products))
+    ),
 
-    productById: ({ productId }: Pick<Product, 'productId'>): Promise<ProductDetails> =>
-      fetchJson(`${eolApiUrl}/products/${productId}`).then(parseWith(detailedProduct)),
+    productById: ({ productId }: Pick<Product, 'productId'>): Promise<ProductDetails> => withRetry(
+      () => fetchJson(`${eolApiUrl}/products/${productId}`)
+        .catch(logErrorAndRethrow({ productId }))
+        .then(parseWith(detailedProduct))
+    ),
   }
 }
 
@@ -31,6 +36,21 @@ const parseWith = <T extends z.ZodMiniType>(schema: T) => (data: unknown): z.out
     throw new Error(message)
   }
   return parsed.data
+}
+
+const logErrorAndRethrow = (params: unknown) => (e: Error) => {
+  console.error(e, params)
+  throw e
+}
+
+const withRetry = async <T>(fn: () => Promise<T>, retries = 3, delay = 250) => {
+  try {
+    return await fn()
+  } catch (e) {
+    if (retries <= 0) throw e
+    await new Promise(resolve => setTimeout(resolve, delay))
+    return withRetry(fn, retries - 1, delay)
+  }
 }
 
 const nonEmptyString = z.string().check(z.trim(), z.minLength(1))
