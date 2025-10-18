@@ -14,6 +14,7 @@ export const SearchBox = ({ value: initialValue, label, placeholder, formClassNa
   onFocusChange?: (hasFocus: boolean) => void
 }) => {
   const [inputValue, setInputValue] = useState(initialValue ?? '')
+
   const changeValue = (v: string) => {
     setInputValue(v)
     onChange(v.trim())
@@ -39,8 +40,7 @@ export const SearchBox = ({ value: initialValue, label, placeholder, formClassNa
           onFocus={() => onFocusChange?.(true)}
           onBlur={() => onFocusChange?.(false)}
           onKeyDown={pipeEvents(
-            onEnter(() => { /* do nothing */
-            }),
+            onEnter(() => { /* do nothing */ }),
             onEsc(() => inputValue ? changeValue('') : ref.current?.blur())
           )}
         />
