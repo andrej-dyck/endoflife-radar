@@ -1,5 +1,5 @@
 import * as fuzzy from 'fuzzy'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import useSWRImmutable from 'swr/immutable'
@@ -14,9 +14,9 @@ export const ProductSearch = ({ onSelect }: {
   const { products, isLoading } = useFilteredProductList(query)
 
   const focus = useRef({ searchBox: false, resultList: false })
-  const [refocused, setRefocused] = useState<boolean>(false)
+  const [, setRefocused] = useState<boolean>(false)
 
-  const showResults = useMemo(() => query && (focus.current.searchBox || focus.current.resultList), [query, focus, refocused])
+  const showResults = query && (focus.current.searchBox || focus.current.resultList)
 
   const { t } = useTranslation('ui')
 
@@ -101,15 +101,10 @@ const FocusableButton = ({ children, hasFocus, onClick, className }: {
 const useFilteredProductList = (searchInput: string) => {
   const { products, isLoading } = useProductList({ load: !!searchInput })
 
-  const filteredProducts = useMemo(
-    () => products == null ? undefined :
-      searchInput
-        ? fuzzy
-          .filter(searchInput, Array.from(products), { extract: p => p.label })
-          .map(r => r.original)
-        : [],
-    [products, searchInput]
-  )
+  const filteredProducts = products == null ? undefined : !searchInput ? [] :
+    fuzzy
+      .filter(searchInput, Array.from(products), { extract: p => p.label })
+      .map(r => r.original)
 
   return { products: filteredProducts, isLoading }
 }
@@ -130,16 +125,16 @@ const useSearchResultsHotkeys = (products?: readonly Product[]) => {
     if (products != null) setResultIndex(undefined)
   }, [products])
 
-  const hotkeyOptions = useMemo(() => ({
+  const hotkeyOptions = ({
     enabled: (products?.length ?? 0) > 0,
     preventDefault: true,
     enableOnFormTags: ['input'] as const,
-  }), [products?.length])
+  })
 
   useHotkeys('down', () => setResultIndex(nextSafeIndex(products?.length)), hotkeyOptions, [products?.length])
   useHotkeys('up', () => setResultIndex(previousSafeIndex(products?.length)), hotkeyOptions, [products?.length])
 
-  const focusedResult = useMemo(() => resultIndex != null ? products?.[resultIndex] : undefined, [products, resultIndex])
+  const focusedResult = resultIndex != null ? products?.[resultIndex] : undefined
 
   return { focusedResult }
 }

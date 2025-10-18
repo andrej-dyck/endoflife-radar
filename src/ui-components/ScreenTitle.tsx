@@ -1,9 +1,8 @@
-import { useMemo } from 'react'
 import { Link } from 'react-router'
 import { withSvgProps } from './withSvgProps.tsx'
 
 export const ScreenTitle = ({ text, noAppLink = false }: { text: string, noAppLink?: boolean }) => {
-  const h1 = useMemo(() => <h1 className="inline-flex items-center gap-2"><RadarIcon /> {text}</h1>, [text])
+  const h1 = <h1 className="inline-flex items-center gap-2"><RadarIcon /> {text}</h1>
   return noAppLink ? h1 : <Link to="/" reloadDocument>{h1}</Link>
 }
 

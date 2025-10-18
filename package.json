@@ -22,6 +22,9 @@
     "yarn": "use pnpm",
     "pnpm": ">=10.5.0"
   },
+  "config": {
+    "save-exact": true
+  },
   "dependencies": {
     "clsx": "2.1.1",
     "fuzzy": "0.1.3",
@@ -48,6 +51,7 @@
     "@types/react-dom": "19.2.2",
     "@types/react-router": "5.1.20",
     "@vitejs/plugin-react": "5.0.4",
+    "babel-plugin-react-compiler": "1.0.0",
     "eslint": "9.38.0",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.0",
