@@ -5,7 +5,8 @@ import { withSvgProps } from './withSvgProps.tsx'
 export const BackButton = ({ className }: { className?: string }) => {
 
   const navigate = useNavigate()
-  return <button type="button"
+  return <button
+    aria-label="Navigate back"
     onClick={() => history.length <= 2 ? void navigate('..', { relative: 'route' }) : history.back()}
     className={cns(className, 'flex items-center gap-1.5', 'rounded-full transition-all px-3 py-1 hover:ring hover:ring-focus focus:ring focus:ring-focus cursor-pointer')}
   >
