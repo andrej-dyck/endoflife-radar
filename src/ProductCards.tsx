@@ -1,3 +1,4 @@
+import { useInView } from 'react-intersection-observer'
 import { Link } from 'react-router'
 import { match } from 'ts-pattern'
 import { type Product, type ProductRelease, supportState, type SupportState } from './apiEndoflifeDate.ts'
@@ -21,9 +22,10 @@ const ProductCard = ({ product: { productId }, onRemove }: {
   product: Pick<Product, 'productId'>,
   onRemove?: (p: Pick<Product, 'productId'>) => void,
 }) => {
-  const { product, isLoading } = useProductEolInfo({ productId }, { refreshIntervalInMs: daysInMs(1) })
+  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true })
+  const { product, isLoading } = useProductEolInfo({ productId }, { refreshIntervalInMs: daysInMs(1), load: inView })
 
-  return <div
+  return <div ref={ref}
     className="flex h-52 flex-col overflow-hidden rounded-xl border border-element-border bg-element-bg px-3 py-2"
   >
     {isLoading ? <SpinnerBars /> : <>
