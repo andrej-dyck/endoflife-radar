@@ -1,5 +1,5 @@
 import * as fuzzy from 'fuzzy'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useDeferredValue, useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
 import useSWRImmutable from 'swr/immutable'
@@ -13,10 +13,10 @@ export const ProductSearch = ({ onSelect }: {
   const [query, setQuery] = useState<string>('')
   const { products, isLoading } = useFilteredProductList(query)
 
-  const focus = useRef({ searchBox: false, resultList: false })
-  const [, setRefocused] = useState<boolean>(false)
+  const [focus, setFocus] = useState({ searchBox: false, resultList: false })
+  const deferredFocus = useDeferredValue(focus)
 
-  const showResults = query && (focus.current.searchBox || focus.current.resultList)
+  const showResults = query && (deferredFocus.searchBox || deferredFocus.resultList)
 
   const { t } = useTranslation('ui')
 
@@ -26,10 +26,7 @@ export const ProductSearch = ({ onSelect }: {
       label={t('product-search.label')}
       placeholder={t('product-search.placeholder')}
       onChange={setQuery}
-      onFocusChange={(hasFocus) => {
-        focus.current.searchBox = hasFocus
-        setRefocused(f => !f)
-      }}
+      onFocusChange={(hasFocus) => setFocus(f => ({ ...f, searchBox: hasFocus }))}
       hotkey="ctrl+k"
     />
     {showResults && <SearchResults
@@ -38,14 +35,10 @@ export const ProductSearch = ({ onSelect }: {
       isLoading={isLoading}
       onSelect={(p) => {
         onSelect?.(p)
-        focus.current.resultList = false
+        setFocus(f => ({ ...f, resultList: false }))
         setQuery('')
-        setRefocused(f => !f)
       }}
-      onFocusChange={(hasFocus) => {
-        focus.current.resultList = hasFocus
-        setRefocused(f => !f)
-      }}
+      onFocusChange={(hasFocus) => setFocus(f => ({ ...f, resultList: hasFocus }))}
     />}
   </div>
 }
@@ -59,14 +52,14 @@ const SearchResults = ({ query, products, isLoading, onSelect, onFocusChange }: 
 }) => {
   const { focusedResult } = useSearchResultsHotkeys(products)
 
-  useEffect(() => onFocusChange?.(focusedResult != null), [focusedResult])
   useHotkeys('esc', () => onFocusChange?.(false), { preventDefault: true })
 
-  return <div className="relative">
+  return <div className="relative"
+    onFocus={() => onFocusChange?.(true)}
+    onBlur={() => onFocusChange?.(false)}
+  >
     <ul
       className="absolute top-2 z-50 block max-h-[66dvh] w-full divide-y divide-element-border overflow-y-auto rounded-lg border border-element-border bg-element-bg p-2 transition-all first:mt-0 last:mb-0"
-      onPointerEnter={() => onFocusChange?.(true)}
-      onPointerLeave={() => onFocusChange?.(false)}
     >
       {isLoading
         ? <li><SpinnerBars /></li>
@@ -77,8 +70,11 @@ const SearchResults = ({ query, products, isLoading, onSelect, onFocusChange }: 
               className="my-1 w-full content-center rounded p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
               hasFocus={p.productId === focusedResult?.productId}
               onClick={() => onSelect?.(p)}
-            >{p.label}</FocusableButton>
-          </li>)}
+            >
+              {p.label}
+            </FocusableButton>
+          </li>)
+      }
     </ul>
   </div>
 }
@@ -111,7 +107,7 @@ const useFilteredProductList = (searchInput: string) => {
 
 export const useProductList = (args?: { load?: boolean }) => {
   const { data, isLoading } = useSWRImmutable(
-    args?.load == null || args.load ? 'product-list' : null,
+    args?.load !== false ? 'product-list' : null,
     apiEndoflifeDate().allProducts
   )
 
