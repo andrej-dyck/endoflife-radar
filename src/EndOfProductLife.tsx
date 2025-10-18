@@ -46,10 +46,10 @@ const ProductReleases = ({ releases }: { releases: readonly ProductRelease[] }) 
 
 export const useProductEolInfo = (
   { productId }: Pick<Product, 'productId'>,
-  options?: { refreshIntervalInMs?: number }
+  options?: { refreshIntervalInMs?: number, load?: boolean }
 ) => {
   const { data, isLoading } = useSWRImmutable(
-    { key: 'product-eol', productId },
+    options?.load !== false ? { key: 'product-eol', productId } : null,
     apiEndoflifeDate().productById,
     { refreshInterval: options?.refreshIntervalInMs }
   )
