@@ -45,6 +45,7 @@ export const SearchBox = ({ value: initialValue, label, placeholder, formClassNa
           )}
         />
         <button
+          aria-label={!inputValue ? 'Search' : 'Clear search'}
           className={cns('absolute end-0 top-0 flex h-full flex-col place-content-center rounded-e-lg border border-primary-element bg-primary-element p-2 transition-all focus:ring-4 focus:ring-focus', inputValue && 'cursor-pointer')}
           disabled={!inputValue}
           onClick={() => changeValue('')}
