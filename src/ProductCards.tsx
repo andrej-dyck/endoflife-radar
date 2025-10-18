@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { Link } from 'react-router'
 import { match } from 'ts-pattern'
 import { type Product, type ProductRelease, supportState, type SupportState } from './apiEndoflifeDate.ts'
@@ -37,7 +36,8 @@ const ProductCard = ({ product: { productId }, onRemove }: {
       </div>
       <div className="flex justify-end gap-1">
         <Link to={`/eol/${productId}`}><IconButton icon={<ProductDataIcon />} /></Link>
-        {product?.links && <TextLink href={product.links.html} external><IconButton icon={<ExternalLinkIcon />} /></TextLink>}
+        {product?.links &&
+          <TextLink href={product.links.html} external><IconButton icon={<ExternalLinkIcon />} /></TextLink>}
       </div>
     </>}
   </div>
@@ -52,7 +52,7 @@ const ProductReleases = ({ releases }: { releases: readonly ProductRelease[] }) 
   </div>
 
 const ProductCycle = ({ release, isLatest }: { release: ProductRelease, isLatest?: boolean }) => {
-  const state = useMemo<SupportState>(() => supportState(release), [release])
+  const state = supportState(release)
 
   return <span className="inline-flex items-center gap-2">
     <SupportState state={state} />
@@ -64,16 +64,13 @@ const ProductCycle = ({ release, isLatest }: { release: ProductRelease, isLatest
 }
 
 const SupportState = ({ state }: { state: SupportState }) =>
-  useMemo(
-    () => match(state)
-      .with({ state: 'active-support', isLts: true }, () => <StarCheckIcon className="text-amber-300" />)
-      .with({ state: 'active-support', isLts: false }, () => <CheckIcon className="text-green-600" />)
-      .with({ state: 'extended-support' }, () => <SafetyCheckIcon className="text-orange-600" />)
-      .with({ state: 'discontinued' }, () => <ReleaseAlertIcon className="text-orange-600" />)
-      .with({ state: 'unsupported' }, () => <StopIcon className="text-red-700" />)
-      .otherwise(() => <UnknownIcon />),
-    [state]
-  )
+  match(state)
+    .with({ state: 'active-support', isLts: true }, () => <StarCheckIcon className="text-amber-300" />)
+    .with({ state: 'active-support', isLts: false }, () => <CheckIcon className="text-green-600" />)
+    .with({ state: 'extended-support' }, () => <SafetyCheckIcon className="text-orange-600" />)
+    .with({ state: 'discontinued' }, () => <ReleaseAlertIcon className="text-orange-600" />)
+    .with({ state: 'unsupported' }, () => <StopIcon className="text-red-700" />)
+    .otherwise(() => <UnknownIcon />)
 
 /** lucide:x */
 const RemoveIcon = withSvgProps((props) =>

@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from 'react'
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
 
 export const useUrlState = <TState>(
@@ -15,7 +15,7 @@ export const useUrlState = <TState>(
     if (paramValue != null) setState(parse(paramValue))
   }, [urlSearchParams])
 
-  const setUrlState = useCallback<Dispatch<SetStateAction<TState>>>((action) => {
+  const setUrlState: Dispatch<SetStateAction<TState>> = (action) => {
     const newState = action instanceof Function ? action(state) : action
 
     setState(newState)
@@ -27,7 +27,7 @@ export const useUrlState = <TState>(
     }, {
       replace: options?.replaceHistory ?? true,
     })
-  }, [state])
+  }
 
   return [state, setUrlState]
 }
