@@ -14,7 +14,8 @@ export const ProductCards = ({ products, onRemove }: {
   onRemove?: (p: Pick<Product, 'productId'>) => void,
 }) =>
   <div
-    className="grid grid-cols-1 place-content-center justify-items-stretch gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+    className="grid grid-cols-1 place-content-center justify-items-stretch gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 transition-all transition-discrete"
+  >
     {products.map(p => <ProductCard key={p.productId} product={p} onRemove={onRemove} />)}
   </div>
 
