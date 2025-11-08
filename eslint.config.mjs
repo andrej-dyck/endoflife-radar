@@ -7,7 +7,7 @@ import globals from 'globals'
 
 import eslintReact from 'eslint-plugin-react'
 import eslintReactHooks from 'eslint-plugin-react-hooks'
-// import eslintTailwindcss from 'eslint-plugin-tailwindcss'
+import eslintBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
 
 export default tsEslint.config(
   {
@@ -61,16 +61,11 @@ export default tsEslint.config(
     ...tsEslint.configs.disableTypeChecked,
   },
   {
-    files: ['expert-ui/src/**/*.tsx'],
+    files: ['src/**/*.tsx'],
     plugins: {
       'react': eslintReact,
       'react-hooks': eslintReactHooks,
-      // 'tailwindcss': eslintTailwindcss,
-    },
-    settings: {
-      'react': {
-        version: 'detect',
-      },
+      'better-tailwindcss': eslintBetterTailwindcss,
     },
     languageOptions: {
       parserOptions: {
@@ -86,8 +81,17 @@ export default tsEslint.config(
       'react/react-in-jsx-scope': 0,
       'react/jsx-uses-react': 0,
       'react/display-name': 0,
-      // ...eslintTailwindcss.configs.recommended.rules,
-      // 'tailwindcss/no-custom-classname': 0,
+      ...eslintBetterTailwindcss.configs.recommended.rules,
+      'better-tailwindcss/enforce-consistent-line-wrapping': 0,
+    },
+    settings: {
+      'react': {
+        version: 'detect',
+      },
+      'better-tailwindcss': {
+        'entryPoint': './src/index.css',
+        'callees': ['cns'],
+      },
     },
   }
 )

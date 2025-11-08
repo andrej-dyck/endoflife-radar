@@ -14,7 +14,7 @@ export const ProductCards = ({ products, onRemove }: {
   onRemove?: (p: Pick<Product, 'productId'>) => void,
 }) =>
   <div
-    className="grid grid-cols-1 place-content-center justify-items-stretch gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 transition-all transition-discrete"
+    className="grid grid-cols-1 place-content-center justify-items-stretch gap-4 p-2 transition-all transition-discrete sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
   >
     {products.map(p => <ProductCard key={p.productId} product={p} onRemove={onRemove} />)}
   </div>
@@ -61,7 +61,7 @@ const ProductCycle = ({ release, isLatest }: { release: ProductRelease, isLatest
     <SupportState state={state} />
     <h3 className={cns('line-clamp-1 inline-flex items-center gap-2', !isLatest && 'text-sm font-light')}>
       {release.latest?.name ?? release.name}
-      {release.codename && <i className="text-sm text-placeholder-text">'{release.codename}'</i>}
+      {release.codename && <i className="text-sm text-placeholder-text">&apos;{release.codename}&apos;</i>}
     </h3>
   </span>
 }

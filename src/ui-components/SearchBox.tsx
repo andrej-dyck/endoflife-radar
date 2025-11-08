@@ -22,7 +22,8 @@ export const SearchBox = ({ value: initialValue, label, placeholder, formClassNa
 
   useEffect(() => {
     if (initialValue !== inputValue) setInputValue(initialValue ?? '')
-  }, [initialValue]) // only listen to parameter value changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only listen to parameter value changes
+  }, [initialValue])
 
   const ref = useRef<HTMLInputElement>(null)
 

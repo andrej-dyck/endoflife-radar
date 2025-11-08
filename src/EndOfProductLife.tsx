@@ -17,7 +17,7 @@ export const EndOfProductLife = () => {
     <div className="container p-2 pt-8">
       <BackButton />
     </div>
-    <header className="container p-2 pt-4 flex flex-row flex-wrap items-center justify-between gap-2">
+    <header className="container flex flex-row flex-wrap items-center justify-between gap-2 p-2 pt-4">
       <ScreenTitle text={product?.label ?? productId} noAppLink />
       {product?.links.html &&
         <TextLink href={product.links.html} external className="flex items-center gap-1.5">
@@ -25,7 +25,7 @@ export const EndOfProductLife = () => {
         </TextLink>
       }
     </header>
-    <main className="container px-2 pb-4 flex flex-col gap-2">
+    <main className="container flex flex-col gap-2 px-2 pb-4">
       {isLoading ? <SpinnerBars /> : <>
         {product?.releases && <ProductReleases releases={product.releases} />}
       </>}
@@ -36,7 +36,7 @@ export const EndOfProductLife = () => {
 const ProductReleases = ({ releases }: { releases: readonly ProductRelease[] }) =>
   <>
     {releases.map((r) => <div key={r.name}
-      className="grid grid-cols-2 rounded-xl border border-element-border bg-element-bg px-3 py-2 gap-2"
+      className="grid grid-cols-2 gap-2 rounded-xl border border-element-border bg-element-bg px-3 py-2"
     >
       <h3 className="col-span-2">{r.label ?? r.name}</h3>
       <pre>{JSON.stringify(supportState(r), null, 2)}</pre>

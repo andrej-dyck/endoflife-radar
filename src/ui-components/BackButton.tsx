@@ -8,7 +8,7 @@ export const BackButton = ({ className }: { className?: string }) => {
   return <button
     aria-label="Navigate back"
     onClick={() => history.length <= 2 ? void navigate('..', { relative: 'route' }) : history.back()}
-    className={cns(className, 'flex items-center gap-1.5', 'rounded-full transition-all px-3 py-1 hover:ring hover:ring-focus focus:ring focus:ring-focus cursor-pointer')}
+    className={cns(className, 'flex items-center gap-1.5', 'cursor-pointer rounded-full px-3 py-1 transition-all hover:ring hover:ring-focus focus:ring focus:ring-focus')}
   >
     <ArrowBack /> Back
   </button>

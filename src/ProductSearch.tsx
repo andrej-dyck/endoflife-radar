@@ -64,7 +64,7 @@ const SearchResults = ({ query, products, isLoading, onSelect, onFocusChange }: 
       {isLoading
         ? <li><SpinnerBars /></li>
         : products?.length === 0
-          ? <span>No results for <strong>"{query}"</strong></span>
+          ? <span>No results for <strong>&quot;{query}&quot;</strong></span>
           : products?.map(p => <li key={p.productId}>
             <FocusableButton
               className="my-1 w-full content-center rounded p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
@@ -115,11 +115,13 @@ export const useProductList = (args?: { load?: boolean }) => {
 }
 
 const useSearchResultsHotkeys = (products?: readonly Product[]) => {
-  const [resultIndex, setResultIndex] = useState<number | undefined>()
+  const [resultIndex, setResultIndex] = useState<number | undefined>(undefined)
 
-  useEffect(() => {
-    if (products != null) setResultIndex(undefined)
-  }, [products])
+  const [prevProducts, setPrevProducts] = useState<readonly Product[] | undefined>(products)
+  if (products !== prevProducts) {
+    setPrevProducts(products)
+    setResultIndex(undefined)
+  }
 
   const hotkeyOptions = ({
     enabled: (products?.length ?? 0) > 0,

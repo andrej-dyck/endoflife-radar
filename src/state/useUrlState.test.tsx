@@ -89,8 +89,8 @@ describe('useUrlState', () => {
   })
 })
 
-const inMemoryRouter = (location: `?${string}` | '' = ''): React.FC<{ children: React.ReactNode }> =>
-  ({ children }) => <MemoryRouter initialEntries={[location]}>{children}</MemoryRouter>
+const inMemoryRouter = (location: `?${string}` | '' = '') =>
+  ({ children }: { children: React.ReactNode }) => <MemoryRouter initialEntries={[location]}>{children}</MemoryRouter>
 
 export const pMaybeString: Transformation<string | undefined> = {
   initial: undefined,

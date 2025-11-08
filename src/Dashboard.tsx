@@ -20,7 +20,7 @@ export const Dashboard = () => {
   return <>
     <header className="container flex flex-row flex-wrap items-start gap-2 p-2 pt-8">
       <ScreenTitle text={t('title')} />
-      <span className="flex flex-row flex-wrap grow items-baseline justify-end gap-4">
+      <span className="flex grow flex-row flex-wrap items-baseline justify-end gap-4">
         <TextLink to="/all">show all</TextLink>
         <ProductSearch onSelect={withProduct} />
       </span>
