@@ -67,7 +67,7 @@ const SearchResults = ({ query, products, isLoading, onSelect, onFocusChange }: 
           ? <span>No results for <strong>&quot;{query}&quot;</strong></span>
           : products?.map(p => <li key={p.productId}>
             <FocusableButton
-              className="my-1 w-full content-center rounded p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
+              className="my-1 w-full content-center rounded-sm p-1 text-left hover:bg-highlight-bg hover:font-semibold focus:bg-highlight-bg focus:font-semibold"
               hasFocus={p.productId === focusedResult?.productId}
               onClick={() => onSelect?.(p)}
             >

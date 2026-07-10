@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { onEnter, onEsc, pipeEvents, stopPropagation } from './input-events.ts'
 import { cns } from './twMerge.tsx'
@@ -20,10 +20,7 @@ export const SearchBox = ({ value: initialValue, label, placeholder, formClassNa
     onChange(v.trim())
   }
 
-  useEffect(() => {
-    if (initialValue !== inputValue) setInputValue(initialValue ?? '')
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only listen to parameter value changes
-  }, [initialValue])
+  if (initialValue !== inputValue) setInputValue(initialValue ?? '')
 
   const ref = useRef<HTMLInputElement>(null)
 
@@ -42,12 +39,12 @@ export const SearchBox = ({ value: initialValue, label, placeholder, formClassNa
           onBlur={() => onFocusChange?.(false)}
           onKeyDown={pipeEvents(
             onEnter(() => { /* do nothing */ }),
-            onEsc(() => inputValue ? changeValue('') : ref.current?.blur())
+            onEsc((e) => inputValue ? changeValue('') : e.currentTarget.blur())
           )}
         />
         <button
           aria-label={!inputValue ? 'Search' : 'Clear search'}
-          className={cns('absolute end-0 top-0 flex h-full flex-col place-content-center rounded-e-lg border border-primary-element bg-primary-element p-2 transition-all focus:ring-4 focus:ring-focus', inputValue && 'cursor-pointer')}
+          className={cns('absolute inset-e-0 top-0 flex h-full flex-col place-content-center rounded-e-lg border border-primary-element bg-primary-element p-2 transition-all focus:ring-4 focus:ring-focus', inputValue && 'cursor-pointer')}
           disabled={!inputValue}
           onClick={() => changeValue('')}
         >

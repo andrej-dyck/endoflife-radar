@@ -86,7 +86,7 @@ export default tsEslint.config(
     },
     settings: {
       'react': {
-        version: 'detect',
+        version: '19.2', // instead of 'detect', cf. https://github.com/jsx-eslint/eslint-plugin-react/issues/3977#issuecomment-3945790562
       },
       'better-tailwindcss': {
         'entryPoint': './src/index.css',

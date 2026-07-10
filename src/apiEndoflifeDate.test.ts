@@ -8,7 +8,7 @@ import { apiEndoflifeDate, type ProductRelease, type SupportState, supportState 
 describe('api client endoflife.date', async () => {
   const fullProductsSnapshot: { total: number, result: Record<string, unknown>[] } =
     // snapshot from: https://endoflife.date/api/v1/products/full
-    await import('./test-data/eol-full-products.snapshot.json', { assert: { type: 'json' } })
+    await import('./test-data/eol-full-products.snapshot.json', { with: { type: 'json' } })
 
   test('all products can be parsed (snapshot)', async () => {
     const eolClient = eolApiStub({

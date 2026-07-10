@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ES2024",
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "target": "esnext",
     "outDir": "${configDir}/dist",
 
     /* Base Options */
@@ -33,7 +33,7 @@
     "noUnusedParameters": true,
 
     /* Libs */
-    "lib": ["ES2024"],
+    "lib": ["esnext"],
     "types": ["node"],
   }
 }
