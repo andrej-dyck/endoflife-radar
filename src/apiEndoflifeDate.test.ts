@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+// noinspection PointlessBooleanExpressionJS
 
 import { match, P } from 'ts-pattern'
 import { describe, expect, test } from 'vitest'
