@@ -1,4 +1,4 @@
-import * as fuzzy from 'fuzzy'
+import { search as fuzzySearch } from 'fast-fuzzy'
 import React, { useDeferredValue, useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
@@ -98,9 +98,7 @@ const useFilteredProductList = (searchInput: string) => {
   const { products, isLoading } = useProductList({ load: !!searchInput })
 
   const filteredProducts = products == null ? undefined : !searchInput ? [] :
-    fuzzy
-      .filter(searchInput, Array.from(products), { extract: p => p.label })
-      .map(r => r.original)
+    fuzzySearch(searchInput, Array.from(products), { keySelector: p => p.label, threshold: 0.7 })
 
   return { products: filteredProducts, isLoading }
 }
