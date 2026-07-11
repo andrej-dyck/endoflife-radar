@@ -1,7 +1,8 @@
 # End-of-Life Radar
 
-![Build](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/ci.yml/badge.svg?branch=main)
-![GitHub Pages](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/deploy-gh-pages.yml/badge.svg)
+[![CI](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/deploy-gh-pages.yml/badge.svg?branch=main)](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/deploy-gh-pages.yml)
+[![CodeQL](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/andrej-dyck/endoflife-radar/actions/workflows/github-code-scanning/codeql)
 
 An end-of-life radar for your projects using [endoflife.date](https://endoflife.date/).
 
