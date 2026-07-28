@@ -43,6 +43,19 @@ Update the snapshot with
 curl https://endoflife.date/api/v1/products/full > ./src/test-data/eol-full-products.snapshot.json
 ```
 
+## Update Dependencies
+
+Update dependencies in `package.json`. Use fixed versions only.
+
+Check for available updates with
+```sh
+pnpm outdated -r
+```
+or if you want to check devDependencies only
+```sh
+pnpm outdated -r -D
+```
+
 ## Production Build
 
 Build the app for production (output to `./dist`).
