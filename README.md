@@ -33,6 +33,16 @@ Run typecheck, lint, and tests (unit and integration).
 pnpm check
 ```
 
+## EoL-products API Snapshot for CI Tests
+
+The integration test of the [end-of-life API](https://endoflife.date/docs/api/v1/) cannot run in CI, as it will be rate-limited and blocked.
+So, to run the integration test in CI, a snapshot of all products is used.
+
+Update the snapshot with
+```bash
+curl https://endoflife.date/api/v1/products/full > ./src/test-data/eol-full-products.snapshot.json
+```
+
 ## Production Build
 
 Build the app for production (output to `./dist`).

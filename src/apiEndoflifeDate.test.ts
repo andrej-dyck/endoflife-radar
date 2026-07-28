@@ -64,7 +64,7 @@ describe('api client endoflife.date', async () => {
         productId: expect.stringMatching(/.+/),
       })
     }
-  }, 60_000)
+  }, 90_000)
 })
 
 describe('api support state', () => {
