@@ -15,12 +15,12 @@
     "build:gh-pages": "tsc && vite build --base=/endoflife-radar",
     "preview": "vite preview"
   },
-  "packageManager": "pnpm@11.17.0+sha512.cca3cea332ad254bb84145f966d19f4879615210346fc92c79a047f23a0d7b3cca3c3792f0076ba1f1831d277efbcf0a9119b31a9a60eca7fb3d6231f331ef72",
+  "packageManager": "pnpm@12.3.4+sha512.961aa41fb077da3a04a441d9f8e15ebc0c96da8ef710b2eb67bf9ee7cb0610eabd48f1fd85f51cffe73846785fa0f87c56a3a872a1d893f8446741b5cce45457",
   "engine-strict": true,
   "engines": {
     "npm": "use pnpm",
     "yarn": "use pnpm",
-    "pnpm": ">=10.20.0"
+    "pnpm": ">=12"
   },
   "dependencies": {
     "clsx": "2.1.1",
