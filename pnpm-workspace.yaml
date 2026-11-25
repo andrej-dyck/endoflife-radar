@@ -6,3 +6,8 @@ minimumReleaseAgeExclude:
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
+overrides:
+  baseline-browser-mapping@>=2.0.0 <2.11.0: ^2.11.0
+  brace-expansion@<1.1.21: ^1.1.21
+  browserslist@<=4.28.6: ^4.28.7
+  source-map-js@>=1.0.0 <1.2.2: ^1.2.2
