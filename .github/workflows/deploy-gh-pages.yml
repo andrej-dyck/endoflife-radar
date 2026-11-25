@@ -26,19 +26,19 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v7
-    - uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
+    - uses: pnpm/setup@v3
       with:
-        runtime: node@24
+        runtime: node@26
         cache: true
         install: 'true'
     - name: Build for GitHub Pages
       run: pnpm build:gh-pages
     - name: Setup GitHub Pages
-      uses: actions/configure-pages@v5
+      uses: actions/configure-pages@v6
     - name: Upload Artifact
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v5
       with:
         path: './dist'
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@v5

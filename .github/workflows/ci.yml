@@ -13,9 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7
-    - uses: pnpm/setup@c9883cc79df532ad1a7b81bf9ab944ceb090d65c # v2.0.0
+    - uses: pnpm/setup@v3
       with:
-        runtime: node@24
+        runtime: node@26
         cache: true
         install: 'true'
     - name: Typecheck

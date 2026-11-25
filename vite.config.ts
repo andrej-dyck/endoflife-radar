@@ -11,13 +11,16 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: (id: string) => {
-          if (id.includes('react-router')) return '@react-router'
-          if (id.includes('react')) return '@react'
-          if (id.includes('zod')) return '@zod'
-          return undefined
+        codeSplitting: {
+          groups: [{
+            name: '@react',
+            test: /node_modules[\\/](react|react-.+)[\\/]/,
+          }, {
+            name: '@zod',
+            test: /node_modules[\\/]zod[\\/]/,
+          }],
         },
       },
     },
